@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/Login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <title><%= title %></title>
+</head>
+<body>
+    <div class="background"></div>
+    <%- include('partials/header', { showSidebar: false }) %>
+    
+    <div class="mainContainer">
+        <div class="container">
+            <h1>Attendance Management System</h1>
+            <h2>Smart, Secure, and Simple Attendance Tracking for Institutions</h2>
+            <p>Welcome back! <br>
+                Please log in to access your attendance dashboard.
+                Manage attendance, track records, and view insights in real time.</p>
+        </div>
+        <div class="container">
+            <form action="/login" method="POST">
+                <div class="form-radio">
+                    <label>
+                        <input type="radio" name="role" value="admin" required> Admin
+                    </label>
+                    <label>
+                        <input type="radio" name="role" value="user" required> User
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label><br>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label><br>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <label for="remember">
+                    <input type="checkbox" id="remember" name="remember"> Remember Me
+                </label><br>
+                <button type="submit">Sign In</button><br>
+                <a href="/forgot-password">Forgot Password?</a><br><br>
+                <label class="register">Don't have an account?
+                    <a href="/register">Register</a>
+                </label>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

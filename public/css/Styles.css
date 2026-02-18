@@ -1,0 +1,243 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    flex-direction: column;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    position: sticky;
+    color: white;
+    margin: 0;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 15px 25px;
+    background-color: white;
+    align-items: center;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header .logo {
+    font-size: 24px;
+    font-weight: 700;
+    margin-right: auto;
+}
+
+.logo a {
+    text-decoration: none;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 24px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #6b7280;
+    font-size: 20px;
+    margin-left: 10px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #8b5cf6;
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0;
+    padding: 0;
+}
+
+.sidebar {
+    position: fixed;
+    top: 65px;
+    left: 0;
+    width: 260px;
+    height: calc(100vh - 65px);
+    background: white;
+    padding: 20px 15px;
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 8px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.sidebar ul li:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+}
+
+.sidebar ul a {
+    text-decoration: none;
+    color: #374151;
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.sidebar ul li:hover a {
+    color: #8b5cf6;
+}
+
+.content {
+    margin-left: 290px;
+    padding: 30px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    flex-grow: 1;
+    min-height: calc(100vh - 65px);
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.menu-toggle .material-symbols-outlined {
+    font-size: 28px;
+    color: #374151;
+}
+
+/* Sidebar Overlay for Mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - TABLET (max-width: 1024px)
+   ============================================ */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 220px;
+    }
+    
+    .content {
+        margin-left: 250px;
+        padding: 20px;
+    }
+    
+    .header {
+        padding: 12px 20px;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .header {
+        padding: 10px 15px;
+    }
+    
+    .header .logo {
+        font-size: 20px;
+    }
+    
+    .logo a {
+        font-size: 20px;
+    }
+    
+    nav a {
+        font-size: 18px;
+        margin-left: 5px;
+    }
+    
+    .mainContainer {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        width: 260px;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        transition: left 0.3s ease;
+        padding-top: 70px;
+    }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+    }
+    
+    .content {
+        margin-left: 0;
+        padding: 15px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - SMALL MOBILE (max-width: 480px)
+   ============================================ */
+@media (max-width: 480px) {
+    .header {
+        padding: 8px 10px;
+    }
+    
+    .header .logo {
+        font-size: 18px;
+    }
+    
+    .logo a {
+        font-size: 18px;
+    }
+    
+    nav a {
+        font-size: 16px;
+    }
+    
+    .content {
+        padding: 10px;
+    }
+    
+    .sidebar {
+        width: 240px;
+    }
+}

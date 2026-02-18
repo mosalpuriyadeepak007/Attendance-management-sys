@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chart-container {
+            width: 700px;
+            height: 400px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <canvas id="smoothChart"></canvas>
+    </div>
+
+    <script>
+        const ctx = document.getElementById("smoothChart").getContext("2d");
+
+        const gradientBlue = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientBlue.addColorStop(0, "rgba(66, 133, 244, 0.5)");
+        gradientBlue.addColorStop(1, "rgba(66, 133, 244, 0.05)");
+
+        const gradientGreen = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientGreen.addColorStop(0, "rgba(52, 168, 83, 0.5)");
+        gradientGreen.addColorStop(1, "rgba(52, 168, 83, 0.05)");
+
+        const gradientOrange = ctx.createLinearGradient(0, 0, 0, 300);
+        gradientOrange.addColorStop(0, "rgba(251, 188, 5, 0.5)");
+        gradientOrange.addColorStop(1, "rgba(251, 188, 5, 0.05)");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00"],
+                datasets: [
+                    {
+                        label: "Present",
+                        data: [3, 4, 2, 5, 3, 6, 7],
+                        borderColor: "#4285F4",
+                        backgroundColor: gradientBlue,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#4285F4",
+                        pointRadius: 5,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: "Absent",
+                        data: [1, 2, 3, 1, 2, 1, 3],
+                        borderColor: "#FBBC05",
+                        backgroundColor: gradientOrange,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#FBBC05",
+                        pointRadius: 5,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: "Total",
+                        data: [5, 6, 5, 6, 5, 8, 9],
+                        borderColor: "#34A853",
+                        backgroundColor: gradientGreen,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: "#fff",
+                        pointBorderColor: "#34A853",
+                        pointRadius: 5,
+                        pointHoverRadius: 6,
+                    },
+                ],
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: "#666" }
+                    },
+                    y: {
+                        grid: { color: "rgba(0,0,0,0.05)" },
+                        ticks: { color: "#666", beginAtZero: true }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

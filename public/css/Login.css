@@ -1,0 +1,380 @@
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.background{
+    background-image: url('/images/vivid-blurred-colorful-background.jpg');
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    z-index: -1;
+}
+
+/*Navigation Bar Styles*/
+
+.header{
+    display:flex;
+    color: white;
+    margin: 0;
+    margin-bottom: 45px;
+    padding: 12px;
+    background-color: white;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.header .logo{
+    font-size: 30px;
+    font-weight: bold;
+    margin-right: auto;
+}
+
+.logo a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    font-size: 30px;
+}
+
+
+.menuBar{
+    display: flex;
+    padding-right: 20px;
+}
+
+.menuBar a{
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+    margin-left: 20px;
+}
+
+.material-symbols-outlined {
+    display: flex;
+    color: rgb(0, 0, 0);
+    margin-left: 0px;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+
+/* Main Container Styles */
+.mainContainer{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.container{
+    height : 400px;
+    background-color: white;
+    padding: 50px ;
+}
+
+.container:nth-child(1){
+    background-color: rgba(211, 211, 211, 0);
+    margin-right: 100px;
+    justify-content: center;
+    width: 600px;
+}
+
+
+h1{
+    width: 500px;
+    margin-bottom: 40px;
+    font-size: 50px;
+}
+
+h2{
+    width: 500px;
+    font-size: 20px;
+    color: rgb(178, 171, 171);
+}
+
+p{
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: rgb(96, 93, 93);
+}
+
+.container:nth-child(2){
+    background-color :rgba(240, 248, 255, 0.54);
+    border-radius: 20px;
+    width: 450px;
+    box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    backdrop-filter: blur(20px);
+}
+
+.form-radio{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+}   
+
+.form-radio label{
+    font-size: 15px ;
+    margin-right: 10px;
+    border-radius: 2px;
+    border : 2px solid rgba(49, 80, 173, 0.634);
+    padding: 12px 20px;
+    width: 200px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.form-group{
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label{
+    font-size: 15px ;
+}
+
+.form-group input{
+    height: 30px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(128, 128, 128, 0.516);
+    padding: 5px 20px;
+    font-size: 15px;
+}
+
+button{
+    background-color: rgba(49, 80, 173, 0.634);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+button:hover{
+    background-color: rgba(49, 80, 173, 0.834);
+}
+
+a{
+    text-decoration: none;
+    color: rgba(120, 120, 120, 0.903);
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.register{
+    font-size: 15px;
+    margin-top: 20px;
+} 
+
+.register a{
+    color: rgba(48, 132, 189, 0.948);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - LOGIN PAGE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .mainContainer {
+        flex-direction: row;
+        padding: 20px;
+    }
+    
+    .container:nth-child(1) {
+        width: 450px;
+        margin-right: 50px;
+    }
+    
+    h1 {
+        font-size: 40px;
+        width: 400px;
+    }
+    
+    h2 {
+        width: 400px;
+        font-size: 18px;
+    }
+    
+    .container:nth-child(2) {
+        width: 380px;
+        padding: 40px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header {
+        margin-bottom: 20px;
+        padding: 10px 15px;
+    }
+    
+    .header .logo {
+        font-size: 24px;
+    }
+    
+    .logo a {
+        font-size: 24px;
+    }
+    
+    .menuBar a {
+        margin-left: 10px;
+    }
+    
+    .mainContainer {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        margin-top: 0;
+    }
+    
+    .container {
+        height: auto;
+        padding: 30px;
+    }
+    
+    .container:nth-child(1) {
+        width: 100%;
+        max-width: 500px;
+        margin-right: 0;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 32px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    h2 {
+        width: 100%;
+        font-size: 16px;
+    }
+    
+    p {
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .container:nth-child(2) {
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+        box-sizing: border-box;
+    }
+    
+    .form-radio {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .form-radio label {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    
+    .form-group input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .header {
+        padding: 8px 10px;
+    }
+    
+    .header .logo {
+        font-size: 20px;
+    }
+    
+    .logo a {
+        font-size: 20px;
+    }
+    
+    .menuBar {
+        padding-right: 5px;
+    }
+    
+    .menuBar a {
+        margin-left: 8px;
+    }
+    
+    .material-symbols-outlined {
+        font-size: 18px;
+    }
+    
+    .mainContainer {
+        padding: 5px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+    
+    .container:nth-child(1) {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 26px;
+    }
+    
+    h2 {
+        font-size: 14px;
+    }
+    
+    p {
+        font-size: 14px;
+    }
+    
+    .container:nth-child(2) {
+        padding: 25px 20px;
+    }
+    
+    .form-radio label {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+    }
+    
+    .form-group input {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+    
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    a {
+        font-size: 13px;
+    }
+    
+    .register {
+        font-size: 13px;
+    }
+}

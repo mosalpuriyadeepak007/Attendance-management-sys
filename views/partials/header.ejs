@@ -1,0 +1,28 @@
+<!-- Header Navigation -->
+<div class="header">
+    <% if (typeof showSidebar === 'undefined' || showSidebar !== false) { %>
+    <button class="menu-toggle" onclick="toggleSidebar()">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+    <% } %>
+    <div class="logo">
+        <a href="/">AMS</a>
+    </div>
+    <div class="menuBar">
+        <nav>
+            <a href="#notifications"><span class="material-symbols-outlined">notifications</span></a>
+            <a href="#chat"><span class="material-symbols-outlined">chat_bubble</span></a>
+            <a href="/login" class="active"><span class="material-symbols-outlined">account_circle</span></a>
+        </nav>
+    </div>
+</div>
+<% if (typeof showSidebar === 'undefined' || showSidebar !== false) { %>
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<script>
+function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('active');
+    document.querySelector('.sidebar-overlay').classList.toggle('active');
+}
+</script>
+<% } %>

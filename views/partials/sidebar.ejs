@@ -1,0 +1,23 @@
+<!-- Sidebar Navigation -->
+<div class="sidebar">
+    <ul class="nav-links">
+        <li <% if (typeof active !== 'undefined' && active === 'dashboard') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/dashboard" <% if (typeof active !== 'undefined' && active === 'dashboard') { %>class="active"<% } %>>Dashboard</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'faculty') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty" <% if (typeof active !== 'undefined' && active === 'faculty') { %>class="active"<% } %>>Faculty</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'students') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/students">Students</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'attendance') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/attendance">Attendance</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'reports') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/reports">Reports</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'settings') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/settings">Settings</a>
+        </li>
+    </ul>
+</div>

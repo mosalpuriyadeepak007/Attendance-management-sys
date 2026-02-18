@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('partials/sidebar', { active: 'dashboard' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/dashboard">Dashboard</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary"><span class="material-symbols-outlined">download</span> Export</button>
+                    <button class="btn-primary"><span class="material-symbols-outlined">add</span> Add Record</button>
+                </div>
+            </div>
+
+            <div class="dashboard-widgets">
+                <div class="widget widget-blue">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">school</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.totalStudents %></p>
+                        <h3>Total Students</h3>
+                        <span class="widget-trend up"><span class="material-symbols-outlined">trending_up</span> +12%</span>
+                    </div>
+                </div>
+                <div class="widget widget-green">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.presentToday %></p>
+                        <h3>Present Today</h3>
+                        <span class="widget-trend up"><span class="material-symbols-outlined">trending_up</span> +5%</span>
+                    </div>
+                </div>
+                <div class="widget widget-orange">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">description</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.pendingReports %></p>
+                        <h3>Pending Reports</h3>
+                        <span class="widget-trend down"><span class="material-symbols-outlined">trending_down</span> -2</span>
+                    </div>
+                </div>
+                <div class="widget widget-purple">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">notifications_active</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.notifications %></p>
+                        <h3>Notifications</h3>
+                        <span class="widget-trend">Today</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                        <h3>Weekly Overview</h3>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="info-row">
+                            <span class="label">Monday</span>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 92%;"></div>
+                            </div>
+                            <span class="value">92%</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Tuesday</span>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 88%;"></div>
+                            </div>
+                            <span class="value">88%</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Wednesday</span>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 95%;"></div>
+                            </div>
+                            <span class="value">95%</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Thursday</span>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 90%;"></div>
+                            </div>
+                            <span class="value">90%</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Friday</span>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 85%;"></div>
+                            </div>
+                            <span class="value">85%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">menu_book</span>
+                        <h3>Subject Attendance</h3>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="subject-item">
+                            <div class="subject-info">
+                                <span class="subject-name">Python</span>
+                                <span class="subject-percent">88%</span>
+                            </div>
+                            <div class="progress-bar blue">
+                                <div class="progress" style="width: 88%;"></div>
+                            </div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-info">
+                                <span class="subject-name">Java</span>
+                                <span class="subject-percent">85%</span>
+                            </div>
+                            <div class="progress-bar green">
+                                <div class="progress" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-info">
+                                <span class="subject-name">DBMS</span>
+                                <span class="subject-percent">80%</span>
+                            </div>
+                            <div class="progress-bar orange">
+                                <div class="progress" style="width: 80%;"></div>
+                            </div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-info">
+                                <span class="subject-name">Operating System</span>
+                                <span class="subject-percent">75%</span>
+                            </div>
+                            <div class="progress-bar red">
+                                <div class="progress" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="subject-item">
+                            <div class="subject-info">
+                                <span class="subject-name">AI & ML</span>
+                                <span class="subject-percent">90%</span>
+                            </div>
+                            <div class="progress-bar purple">
+                                <div class="progress" style="width: 90%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">groups</span>
+                        <h3>Top Attendees</h3>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="attendee-item">
+                            <div class="attendee-rank gold">1</div>
+                            <div class="attendee-info">
+                                <span class="attendee-name">Sarah Johnson</span>
+                                <span class="attendee-id">CS2024001</span>
+                            </div>
+                            <span class="attendee-percent">98%</span>
+                        </div>
+                        <div class="attendee-item">
+                            <div class="attendee-rank silver">2</div>
+                            <div class="attendee-info">
+                                <span class="attendee-name">Michael Chen</span>
+                                <span class="attendee-id">CS2024015</span>
+                            </div>
+                            <span class="attendee-percent">97%</span>
+                        </div>
+                        <div class="attendee-item">
+                            <div class="attendee-rank bronze">3</div>
+                            <div class="attendee-info">
+                                <span class="attendee-name">Emily Davis</span>
+                                <span class="attendee-id">CS2024023</span>
+                            </div>
+                            <span class="attendee-percent">96%</span>
+                        </div>
+                        <div class="attendee-item">
+                            <div class="attendee-rank">4</div>
+                            <div class="attendee-info">
+                                <span class="attendee-name">James Wilson</span>
+                                <span class="attendee-id">CS2024008</span>
+                            </div>
+                            <span class="attendee-percent">95%</span>
+                        </div>
+                        <div class="attendee-item">
+                            <div class="attendee-rank">5</div>
+                            <div class="attendee-info">
+                                <span class="attendee-name">Lisa Anderson</span>
+                                <span class="attendee-id">CS2024042</span>
+                            </div>
+                            <span class="attendee-percent">94%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">warning</span>
+                        <h3>Low Attendance Alert</h3>
+                    </div>
+                    <div class="info-card-body">
+                        <div class="alert-item">
+                            <div class="alert-icon red">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <div class="alert-info">
+                                <span class="alert-name">David Brown</span>
+                                <span class="alert-detail">Below 60% - CS2024031</span>
+                            </div>
+                            <span class="alert-percent danger">58%</span>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon orange">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <div class="alert-info">
+                                <span class="alert-name">Amy Taylor</span>
+                                <span class="alert-detail">Below 70% - CS2024055</span>
+                            </div>
+                            <span class="alert-percent warning">67%</span>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon orange">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <div class="alert-info">
+                                <span class="alert-name">Ryan Martinez</span>
+                                <span class="alert-detail">Below 75% - CS2024019</span>
+                            </div>
+                            <span class="alert-percent warning">72%</span>
+                        </div>
+                    </div>
+                    <a href="/reports" class="card-link">View Full Report <span class="material-symbols-outlined">arrow_forward</span></a>
+                </div>
+            </div>
+
+            <div class="bottom-section">
+                <div class="recent-activity">
+                    <div class="section-header">
+                        <h2>Recent Activity</h2>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon green">
+                                <span class="material-symbols-outlined">login</span>
+                            </div>
+                            <div class="activity-details">
+                                <p><strong>John Doe</strong> marked attendance</p>
+                                <span>2 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon blue">
+                                <span class="material-symbols-outlined">person_add</span>
+                            </div>
+                            <div class="activity-details">
+                                <p><strong>New student</strong> registered</p>
+                                <span>15 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon orange">
+                                <span class="material-symbols-outlined">edit_note</span>
+                            </div>
+                            <div class="activity-details">
+                                <p><strong>Report</strong> generated for CS101</p>
+                                <span>1 hour ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon purple">
+                                <span class="material-symbols-outlined">schedule</span>
+                            </div>
+                            <div class="activity-details">
+                                <p><strong>Schedule</strong> updated for Monday</p>
+                                <span>3 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="action-grid">
+                        <a href="/attendance" class="action-btn">
+                            <span class="material-symbols-outlined">fact_check</span>
+                            <span>Mark Attendance</span>
+                        </a>
+                        <a href="/students" class="action-btn">
+                            <span class="material-symbols-outlined">group_add</span>
+                            <span>Add Student</span>
+                        </a>
+                        <a href="/reports" class="action-btn">
+                            <span class="material-symbols-outlined">summarize</span>
+                            <span>Generate Report</span>
+                        </a>
+                        <a href="/settings" class="action-btn">
+                            <span class="material-symbols-outlined">settings</span>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
