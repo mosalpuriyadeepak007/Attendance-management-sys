@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('partials/sidebar', { active: 'students' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Students</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/students">Students</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary"><span class="material-symbols-outlined">download</span> Export</button>
+                    <button class="btn-primary" onclick="openModal('addStudentModal')"><span class="material-symbols-outlined">person_add</span> Add Student</button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Search students..." id="searchInput">
+                </div>
+                <div class="filter-group">
+                    <select id="departmentFilter">
+                        <option value="">All Departments</option>
+                        <option value="cse">Computer Science</option>
+                        <option value="ece">Electronics</option>
+                        <option value="mech">Mechanical</option>
+                        <option value="civil">Civil</option>
+                    </select>
+                    <select id="yearFilter">
+                        <option value="">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Year</th>
+                            <th>Attendance %</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% students.forEach(function(student) { %>
+                        <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td><%= student.id %></td>
+                            <td>
+                                <div class="student-info">
+                                    <div class="avatar"><%= student.name.charAt(0) %></div>
+                                    <span><%= student.name %></span>
+                                </div>
+                            </td>
+                            <td><%= student.email %></td>
+                            <td><%= student.department %></td>
+                            <td><%= student.year %></td>
+                            <td>
+                                <div class="attendance-badge <%= student.attendance >= 75 ? 'good' : 'low' %>">
+                                    <%= student.attendance %>%
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge <%= student.status %>"><%= student.status %></span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon" title="View"><span class="material-symbols-outlined">visibility</span></button>
+                                    <button class="btn-icon" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                                    <button class="btn-icon delete" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <span class="page-info">Showing 1-10 of <%= students.length %> students</span>
+                <div class="page-buttons">
+                    <button class="page-btn" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Student</h2>
+                <button class="close-btn" onclick="closeModal('addStudentModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/students/add" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <input type="text" id="studentId" name="studentId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" name="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" id="studentEmail" name="studentEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentPhone">Phone</label>
+                        <input type="tel" id="studentPhone" name="studentPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="studentDept">Department</label>
+                        <select id="studentDept" name="studentDept" required>
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentYear">Year</label>
+                        <select id="studentYear" name="studentYear" required>
+                            <option value="">Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('addStudentModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

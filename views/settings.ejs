@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('partials/sidebar', { active: 'settings' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/settings">Settings</a></p>
+                </div>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="settings-container">
+                <div class="settings-sidebar">
+                    <ul class="settings-nav">
+                        <li class="active" data-tab="general">
+                            <span class="material-symbols-outlined">settings</span>
+                            General Settings
+                        </li>
+                        <li data-tab="users">
+                            <span class="material-symbols-outlined">group</span>
+                            User Management
+                        </li>
+                        <li data-tab="departments">
+                            <span class="material-symbols-outlined">apartment</span>
+                            Departments
+                        </li>
+                        <li data-tab="attendance">
+                            <span class="material-symbols-outlined">fact_check</span>
+                            Attendance Rules
+                        </li>
+                        <li data-tab="notifications">
+                            <span class="material-symbols-outlined">notifications</span>
+                            Notifications
+                        </li>
+                        <li data-tab="backup">
+                            <span class="material-symbols-outlined">backup</span>
+                            Backup & Restore
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="settings-content">
+                    <!-- General Settings Tab -->
+                    <div id="general" class="settings-tab active">
+                        <h2>General Settings</h2>
+                        <form action="/settings/general" method="POST">
+                            <div class="settings-section">
+                                <h3>Institution Details</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="institutionName">Institution Name</label>
+                                        <input type="text" id="institutionName" name="institutionName" value="<%= settings.institutionName || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="institutionCode">Institution Code</label>
+                                        <input type="text" id="institutionCode" name="institutionCode" value="<%= settings.institutionCode || '' %>">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="address">Address</label>
+                                        <textarea id="address" name="address" rows="3"><%= settings.address || '' %></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="tel" id="phone" name="phone" value="<%= settings.phone || '' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" id="email" name="email" value="<%= settings.email || '' %>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>Academic Year</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="academicYear">Current Academic Year</label>
+                                        <select id="academicYear" name="academicYear">
+                                            <option value="2025-2026" <%= settings.academicYear === '2025-2026' ? 'selected' : '' %>>2025-2026</option>
+                                            <option value="2024-2025" <%= settings.academicYear === '2024-2025' ? 'selected' : '' %>>2024-2025</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="semester">Current Semester</label>
+                                        <select id="semester" name="semester">
+                                            <option value="1">Semester 1</option>
+                                            <option value="2">Semester 2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- User Management Tab -->
+                    <div id="users" class="settings-tab">
+                        <h2>User Management</h2>
+                        <div class="section-header">
+                            <p>Manage admin users and their permissions</p>
+                            <button class="btn-primary" onclick="openModal('addUserModal')">
+                                <span class="material-symbols-outlined">person_add</span> Add User
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Last Login</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% users.forEach(function(user) { %>
+                                    <tr>
+                                        <td><%= user.username %></td>
+                                        <td><%= user.email %></td>
+                                        <td><span class="role-badge <%= user.role %>"><%= user.role %></span></td>
+                                        <td><span class="status-badge <%= user.status %>"><%= user.status %></span></td>
+                                        <td><%= user.lastLogin %></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-icon" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                                                <button class="btn-icon delete" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Departments Tab -->
+                    <div id="departments" class="settings-tab">
+                        <h2>Departments</h2>
+                        <div class="section-header">
+                            <p>Manage departments and classes</p>
+                            <button class="btn-primary" onclick="openModal('addDeptModal')">
+                                <span class="material-symbols-outlined">add</span> Add Department
+                            </button>
+                        </div>
+                        <div class="departments-grid">
+                            <% departments.forEach(function(dept) { %>
+                            <div class="department-card">
+                                <div class="dept-header">
+                                    <span class="material-symbols-outlined">apartment</span>
+                                    <h3><%= dept.name %></h3>
+                                </div>
+                                <div class="dept-stats">
+                                    <div class="stat">
+                                        <span class="value"><%= dept.students %></span>
+                                        <span class="label">Students</span>
+                                    </div>
+                                    <div class="stat">
+                                        <span class="value"><%= dept.faculty %></span>
+                                        <span class="label">Faculty</span>
+                                    </div>
+                                </div>
+                                <div class="dept-actions">
+                                    <button class="btn-icon" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                                    <button class="btn-icon delete" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Rules Tab -->
+                    <div id="attendance" class="settings-tab">
+                        <h2>Attendance Rules</h2>
+                        <form action="/settings/attendance" method="POST">
+                            <div class="settings-section">
+                                <h3>Minimum Attendance Requirements</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="minAttendance">Minimum Attendance Percentage</label>
+                                        <input type="number" id="minAttendance" name="minAttendance" min="0" max="100" value="<%= settings.minAttendance || 75 %>">
+                                        <small>Students below this will be marked as defaulters</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="warningThreshold">Warning Threshold</label>
+                                        <input type="number" id="warningThreshold" name="warningThreshold" min="0" max="100" value="<%= settings.warningThreshold || 80 %>">
+                                        <small>Students below this will receive warnings</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>Working Hours</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="startTime">Start Time</label>
+                                        <input type="time" id="startTime" name="startTime" value="<%= settings.startTime || '09:00' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endTime">End Time</label>
+                                        <input type="time" id="endTime" name="endTime" value="<%= settings.endTime || '17:00' %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lateThreshold">Late Threshold (minutes)</label>
+                                        <input type="number" id="lateThreshold" name="lateThreshold" min="0" value="<%= settings.lateThreshold || 15 %>">
+                                        <small>Minutes after start time to mark as late</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div id="notifications" class="settings-tab">
+                        <h2>Notification Settings</h2>
+                        <form action="/settings/notifications" method="POST">
+                            <div class="settings-section">
+                                <h3>Email Notifications</h3>
+                                <div class="toggle-group">
+                                    <label class="toggle-item">
+                                        <input type="checkbox" name="emailAbsent" <%= settings.emailAbsent ? 'checked' : '' %>>
+                                        <span class="toggle-label">Send email to parents on absence</span>
+                                    </label>
+                                    <label class="toggle-item">
+                                        <input type="checkbox" name="emailLowAttendance" <%= settings.emailLowAttendance ? 'checked' : '' %>>
+                                        <span class="toggle-label">Send email when attendance falls below threshold</span>
+                                    </label>
+                                    <label class="toggle-item">
+                                        <input type="checkbox" name="emailWeeklyReport" <%= settings.emailWeeklyReport ? 'checked' : '' %>>
+                                        <span class="toggle-label">Send weekly attendance report</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="settings-section">
+                                <h3>SMS Notifications</h3>
+                                <div class="toggle-group">
+                                    <label class="toggle-item">
+                                        <input type="checkbox" name="smsAbsent" <%= settings.smsAbsent ? 'checked' : '' %>>
+                                        <span class="toggle-label">Send SMS to parents on absence</span>
+                                    </label>
+                                    <label class="toggle-item">
+                                        <input type="checkbox" name="smsLate" <%= settings.smsLate ? 'checked' : '' %>>
+                                        <span class="toggle-label">Send SMS when student is late</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Backup & Restore Tab -->
+                    <div id="backup" class="settings-tab">
+                        <h2>Backup & Restore</h2>
+                        <div class="settings-section">
+                            <h3>Create Backup</h3>
+                            <p>Download a complete backup of all attendance data</p>
+                            <button class="btn-primary"><span class="material-symbols-outlined">download</span> Download Backup</button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Restore Data</h3>
+                            <p>Restore attendance data from a backup file</p>
+                            <div class="file-upload">
+                                <input type="file" id="backupFile" name="backupFile" accept=".json,.sql">
+                                <label for="backupFile" class="btn-secondary">
+                                    <span class="material-symbols-outlined">upload</span> Choose File
+                                </label>
+                            </div>
+                            <button class="btn-primary" style="margin-top: 15px;"><span class="material-symbols-outlined">restore</span> Restore Backup</button>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3>Recent Backups</h3>
+                            <div class="backup-list">
+                                <div class="backup-item">
+                                    <span class="material-symbols-outlined">folder_zip</span>
+                                    <div class="backup-info">
+                                        <span class="backup-name">backup_2026-02-19.json</span>
+                                        <span class="backup-date">February 19, 2026</span>
+                                    </div>
+                                    <button class="btn-icon"><span class="material-symbols-outlined">download</span></button>
+                                </div>
+                                <div class="backup-item">
+                                    <span class="material-symbols-outlined">folder_zip</span>
+                                    <div class="backup-info">
+                                        <span class="backup-name">backup_2026-02-12.json</span>
+                                        <span class="backup-date">February 12, 2026</span>
+                                    </div>
+                                    <button class="btn-icon"><span class="material-symbols-outlined">download</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="close-btn" onclick="closeModal('addUserModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/settings/users/add" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="newUsername">Username</label>
+                        <input type="text" id="newUsername" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newEmail">Email</label>
+                        <input type="email" id="newEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Password</label>
+                        <input type="password" id="newPassword" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newRole">Role</label>
+                        <select id="newRole" name="role" required>
+                            <option value="admin">Admin</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="staff">Staff</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Department Modal -->
+    <div id="addDeptModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Department</h2>
+                <button class="close-btn" onclick="closeModal('addDeptModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/settings/departments/add" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="deptName">Department Name</label>
+                        <input type="text" id="deptName" name="deptName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deptCode">Department Code</label>
+                        <input type="text" id="deptCode" name="deptCode" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="deptHead">Department Head</label>
+                        <input type="text" id="deptHead" name="deptHead">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('addDeptModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.settings-nav li').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active from all tabs
+                document.querySelectorAll('.settings-nav li').forEach(li => li.classList.remove('active'));
+                document.querySelectorAll('.settings-tab').forEach(tab => tab.classList.remove('active'));
+                
+                // Add active to clicked tab
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

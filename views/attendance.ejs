@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('partials/sidebar', { active: 'attendance' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Attendance Management</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/attendance">Attendance</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary"><span class="material-symbols-outlined">download</span> Export</button>
+                    <button class="btn-primary" onclick="openModal('markAttendanceModal')"><span class="material-symbols-outlined">fact_check</span> Mark Attendance</button>
+                </div>
+            </div>
+
+            <!-- Date and Filter Section -->
+            <div class="attendance-controls">
+                <div class="date-picker">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <input type="date" id="attendanceDate" value="<%= new Date().toISOString().split('T')[0] %>">
+                </div>
+                <div class="filter-group">
+                    <select id="classFilter">
+                        <option value="">All Classes</option>
+                        <option value="cse-1">CSE - 1st Year</option>
+                        <option value="cse-2">CSE - 2nd Year</option>
+                        <option value="cse-3">CSE - 3rd Year</option>
+                        <option value="ece-1">ECE - 1st Year</option>
+                        <option value="ece-2">ECE - 2nd Year</option>
+                    </select>
+                    <select id="subjectFilter">
+                        <option value="">All Subjects</option>
+                        <option value="math">Mathematics</option>
+                        <option value="physics">Physics</option>
+                        <option value="programming">Programming</option>
+                        <option value="database">Database</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Attendance Summary Cards -->
+            <div class="dashboard-widgets">
+                <div class="widget widget-blue">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.totalStudents %></p>
+                        <h3>Total Students</h3>
+                    </div>
+                </div>
+                <div class="widget widget-green">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.present %></p>
+                        <h3>Present</h3>
+                    </div>
+                </div>
+                <div class="widget widget-orange">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">cancel</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.absent %></p>
+                        <h3>Absent</h3>
+                    </div>
+                </div>
+                <div class="widget widget-purple">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.late %></p>
+                        <h3>Late</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Date</th>
+                            <th>Time In</th>
+                            <th>Status</th>
+                            <th>Marked By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% records.forEach(function(record) { %>
+                        <tr>
+                            <td><%= record.studentId %></td>
+                            <td>
+                                <div class="student-info">
+                                    <div class="avatar"><%= record.name.charAt(0) %></div>
+                                    <span><%= record.name %></span>
+                                </div>
+                            </td>
+                            <td><%= record.class %></td>
+                            <td><%= record.subject %></td>
+                            <td><%= record.date %></td>
+                            <td><%= record.timeIn || '-' %></td>
+                            <td>
+                                <span class="status-badge <%= record.status.toLowerCase() %>"><%= record.status %></span>
+                            </td>
+                            <td><%= record.markedBy %></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+                                    <button class="btn-icon delete" title="Delete"><span class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <span class="page-info">Showing 1-10 of <%= records.length %> records</span>
+                <div class="page-buttons">
+                    <button class="page-btn" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mark Attendance Modal -->
+    <div id="markAttendanceModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Mark Attendance</h2>
+                <button class="close-btn" onclick="closeModal('markAttendanceModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/attendance/mark" method="POST">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="markDate">Date</label>
+                        <input type="date" id="markDate" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="markClass">Class</label>
+                        <select id="markClass" name="class" required>
+                            <option value="">Select Class</option>
+                            <option value="CSE - 1st Year">CSE - 1st Year</option>
+                            <option value="CSE - 2nd Year">CSE - 2nd Year</option>
+                            <option value="ECE - 1st Year">ECE - 1st Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="markSubject">Subject</label>
+                        <select id="markSubject" name="subject" required>
+                            <option value="">Select Subject</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                            <option value="Programming">Programming</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="attendance-list">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Late</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>STU001</td>
+                                <td>John Doe</td>
+                                <td><input type="radio" name="attendance_STU001" value="present" checked></td>
+                                <td><input type="radio" name="attendance_STU001" value="absent"></td>
+                                <td><input type="radio" name="attendance_STU001" value="late"></td>
+                            </tr>
+                            <tr>
+                                <td>STU002</td>
+                                <td>Jane Smith</td>
+                                <td><input type="radio" name="attendance_STU002" value="present" checked></td>
+                                <td><input type="radio" name="attendance_STU002" value="absent"></td>
+                                <td><input type="radio" name="attendance_STU002" value="late"></td>
+                            </tr>
+                            <tr>
+                                <td>STU003</td>
+                                <td>Mike Johnson</td>
+                                <td><input type="radio" name="attendance_STU003" value="present" checked></td>
+                                <td><input type="radio" name="attendance_STU003" value="absent"></td>
+                                <td><input type="radio" name="attendance_STU003" value="late"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('markAttendanceModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Attendance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
