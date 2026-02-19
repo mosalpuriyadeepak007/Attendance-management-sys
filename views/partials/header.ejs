@@ -8,21 +8,183 @@
     <div class="logo">
         <a href="/">AMS</a>
     </div>
+    <% if (typeof showIcons === 'undefined' || showIcons !== false) { %>
     <div class="menuBar">
         <nav>
             <a href="#notifications"><span class="material-symbols-outlined">notifications</span></a>
             <a href="#chat"><span class="material-symbols-outlined">chat_bubble</span></a>
-            <a href="/login" class="active"><span class="material-symbols-outlined">account_circle</span></a>
+            <div class="profile-dropdown-container">
+                <a href="#" class="profile-trigger" onclick="toggleProfileDropdown(event)">
+                    <span class="material-symbols-outlined">account_circle</span>
+                </a>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <span class="material-symbols-outlined">account_circle</span>
+                        </div>
+                        <div class="profile-info">
+                            <h4>Admin User</h4>
+                            <span class="profile-role">Administrator</span>
+                        </div>
+                    </div>
+                    <div class="profile-menu">
+                        <a href="/profile" class="profile-menu-item">
+                            <span class="material-symbols-outlined">person</span>
+                            My Profile
+                        </a>
+                        <a href="/settings" class="profile-menu-item">
+                            <span class="material-symbols-outlined">settings</span>
+                            Settings
+                        </a>
+                        <a href="/help" class="profile-menu-item">
+                            <span class="material-symbols-outlined">help</span>
+                            Help & Support
+                        </a>
+                        <div class="profile-divider"></div>
+                        <a href="/login" class="profile-menu-item logout">
+                            <span class="material-symbols-outlined">logout</span>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
         </nav>
     </div>
+    <% } %>
 </div>
 <% if (typeof showSidebar === 'undefined' || showSidebar !== false) { %>
 <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+<% } %>
+
+<style>
+.profile-dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+.profile-trigger {
+    cursor: pointer;
+}
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+.profile-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.profile-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    transform: rotate(45deg);
+    border-radius: 3px;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px 12px 0 0;
+    color: white;
+}
+.profile-avatar {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-avatar .material-symbols-outlined {
+    font-size: 32px;
+    color: white;
+}
+.profile-info h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+.profile-role {
+    font-size: 12px;
+    opacity: 0.9;
+}
+.profile-menu {
+    padding: 10px 0;
+}
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: #374151;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+.profile-menu-item:hover {
+    background: #f3f4f6;
+    color: #8b5cf6;
+}
+.profile-menu-item .material-symbols-outlined {
+    font-size: 20px;
+    color: #6b7280;
+}
+.profile-menu-item:hover .material-symbols-outlined {
+    color: #8b5cf6;
+}
+.profile-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin: 8px 0;
+}
+.profile-menu-item.logout {
+    color: #dc2626;
+}
+.profile-menu-item.logout .material-symbols-outlined {
+    color: #dc2626;
+}
+.profile-menu-item.logout:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+</style>
 
 <script>
 function toggleSidebar() {
     document.querySelector('.sidebar').classList.toggle('active');
     document.querySelector('.sidebar-overlay').classList.toggle('active');
 }
+
+function toggleProfileDropdown(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('active');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('profileDropdown');
+    const profileContainer = document.querySelector('.profile-dropdown-container');
+    if (dropdown && profileContainer && !profileContainer.contains(event.target)) {
+        dropdown.classList.remove('active');
+    }
+});
 </script>
-<% } %>

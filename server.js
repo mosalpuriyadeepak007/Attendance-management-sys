@@ -28,7 +28,13 @@ app.post('/login', (req, res) => {
     const { role, username, password } = req.body;
     // TODO: Add authentication logic here
     console.log(`Login attempt: ${username} as ${role}`);
-    res.redirect('/dashboard');
+    
+    // Redirect based on role
+    if (role === 'admin') {
+        res.redirect('/dashboard');
+    } else {
+        res.redirect('/faculty/dashboard');
+    }
 });
 
 app.get('/dashboard', (req, res) => {
@@ -40,6 +46,29 @@ app.get('/dashboard', (req, res) => {
             pendingReports: '5',
             notifications: '3 New'
         }
+    });
+});
+
+// Profile route
+app.get('/profile', (req, res) => {
+    res.render('profile', {
+        title: 'My Profile',
+        user: {
+            name: 'Admin User',
+            email: 'admin@abcce.edu',
+            phone: '+1 234 567 8900',
+            department: 'Administration',
+            role: 'admin',
+            loginCount: 156,
+            daysActive: 45
+        },
+        activities: [
+            { type: 'login', icon: 'login', description: 'Logged in from Chrome on Windows', time: '2 hours ago' },
+            { type: 'attendance', icon: 'fact_check', description: 'Viewed attendance report for CSE Dept', time: '3 hours ago' },
+            { type: 'report', icon: 'description', description: 'Generated monthly attendance report', time: 'Yesterday' },
+            { type: 'settings', icon: 'settings', description: 'Updated notification settings', time: '2 days ago' },
+            { type: 'login', icon: 'login', description: 'Logged in from Mobile App', time: '3 days ago' }
+        ]
     });
 });
 
@@ -129,6 +158,78 @@ app.get('/settings', (req, res) => {
             { name: 'Civil', students: 200, faculty: 10 }
         ]
     });
+});
+
+// =====================
+// FACULTY ROUTES
+// =====================
+
+// Faculty Dashboard
+app.get('/faculty/dashboard', (req, res) => {
+    res.render('faculty/dashboard', {
+        title: 'Faculty Dashboard',
+        faculty: {
+            name: 'Prof. Smith',
+            department: 'Computer Science'
+        },
+        stats: {
+            totalClasses: 4,
+            totalStudents: 120,
+            pendingAttendance: 2,
+            markedToday: 2
+        },
+        schedule: [
+            { time: '09:00 AM', subject: 'Data Structures', class: 'CSE - 2nd Year', room: '201', attendanceMarked: true },
+            { time: '11:00 AM', subject: 'Programming', class: 'CSE - 1st Year', room: '102', attendanceMarked: true },
+            { time: '02:00 PM', subject: 'Database', class: 'CSE - 3rd Year', room: '301', attendanceMarked: false },
+            { time: '04:00 PM', subject: 'Algorithms', class: 'CSE - 2nd Year', room: '201', attendanceMarked: false }
+        ],
+        recentRecords: [
+            { date: '2026-02-19', class: 'CSE - 2nd Year', subject: 'Data Structures', present: 28, absent: 2, percentage: 93 },
+            { date: '2026-02-19', class: 'CSE - 1st Year', subject: 'Programming', present: 30, absent: 5, percentage: 86 },
+            { date: '2026-02-18', class: 'CSE - 3rd Year', subject: 'Database', present: 25, absent: 3, percentage: 89 },
+            { date: '2026-02-18', class: 'CSE - 2nd Year', subject: 'Algorithms', present: 27, absent: 3, percentage: 90 }
+        ]
+    });
+});
+
+// Faculty Attendance Page
+app.get('/faculty/attendance', (req, res) => {
+    res.render('faculty/attendance', {
+        title: 'Mark Attendance',
+        classes: [
+            { id: 'cse-1', name: 'CSE - 1st Year' },
+            { id: 'cse-2', name: 'CSE - 2nd Year' },
+            { id: 'cse-3', name: 'CSE - 3rd Year' }
+        ],
+        subjects: [
+            { id: 'ds', name: 'Data Structures' },
+            { id: 'prog', name: 'Programming' },
+            { id: 'db', name: 'Database' },
+            { id: 'algo', name: 'Algorithms' }
+        ],
+        selectedClass: req.query.class || '',
+        selectedSubject: req.query.subject || '',
+        students: [
+            { rollNo: 'CSE001', name: 'John Doe' },
+            { rollNo: 'CSE002', name: 'Jane Smith' },
+            { rollNo: 'CSE003', name: 'Mike Johnson' },
+            { rollNo: 'CSE004', name: 'Sarah Wilson' },
+            { rollNo: 'CSE005', name: 'David Brown' },
+            { rollNo: 'CSE006', name: 'Emily Davis' },
+            { rollNo: 'CSE007', name: 'Chris Lee' },
+            { rollNo: 'CSE008', name: 'Anna Taylor' },
+            { rollNo: 'CSE009', name: 'Robert Martin' },
+            { rollNo: 'CSE010', name: 'Lisa Anderson' }
+        ]
+    });
+});
+
+// Save Attendance
+app.post('/faculty/attendance/save', (req, res) => {
+    console.log('Attendance saved:', req.body);
+    // TODO: Save attendance to database
+    res.redirect('/faculty/dashboard');
 });
 
 // Start server

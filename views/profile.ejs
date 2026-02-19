@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('partials/sidebar', { active: '' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>My Profile</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/profile">Profile</a></p>
+                </div>
+            </div>
+
+            <div class="profile-page-container">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-card-header">
+                        <div class="profile-avatar-large">
+                            <span class="material-symbols-outlined">account_circle</span>
+                        </div>
+                        <button class="btn-edit-avatar" onclick="document.getElementById('avatarInput').click()">
+                            <span class="material-symbols-outlined">photo_camera</span>
+                        </button>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="profile-card-body">
+                        <h2><%= user.name %></h2>
+                        <span class="profile-badge <%= user.role %>"><%= user.role %></span>
+                        <p class="profile-email"><%= user.email %></p>
+                        <div class="profile-stats-row">
+                            <div class="profile-stat">
+                                <span class="stat-value"><%= user.loginCount %></span>
+                                <span class="stat-label">Logins</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="stat-value"><%= user.daysActive %></span>
+                                <span class="stat-label">Days Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="profile-details">
+                    <div class="profile-section">
+                        <div class="section-title">
+                            <h3>Personal Information</h3>
+                            <button class="btn-secondary btn-sm" onclick="toggleEditMode('personal')">
+                                <span class="material-symbols-outlined">edit</span> Edit
+                            </button>
+                        </div>
+                        <form id="personalForm" action="/profile/update" method="POST">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" name="fullName" value="<%= user.name %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" value="<%= user.email %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" value="<%= user.phone %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <input type="text" id="department" name="department" value="<%= user.department %>" readonly>
+                                </div>
+                            </div>
+                            <div class="form-actions hidden" id="personalActions">
+                                <button type="button" class="btn-secondary" onclick="cancelEdit('personal')">Cancel</button>
+                                <button type="submit" class="btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="profile-section">
+                        <div class="section-title">
+                            <h3>Security</h3>
+                        </div>
+                        <form action="/profile/change-password" method="POST">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="profile-section">
+                        <div class="section-title">
+                            <h3>Recent Activity</h3>
+                        </div>
+                        <div class="activity-list">
+                            <% activities.forEach(function(activity) { %>
+                            <div class="activity-item">
+                                <div class="activity-icon <%= activity.type %>">
+                                    <span class="material-symbols-outlined"><%= activity.icon %></span>
+                                </div>
+                                <div class="activity-details">
+                                    <p><%= activity.description %></p>
+                                    <span class="activity-time"><%= activity.time %></span>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .profile-page-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: fit-content;
+        }
+        
+        .profile-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .profile-avatar-large .material-symbols-outlined {
+            font-size: 60px;
+            color: white;
+        }
+        
+        .btn-edit-avatar {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(30px);
+            width: 36px;
+            height: 36px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-edit-avatar .material-symbols-outlined {
+            font-size: 18px;
+            color: #764ba2;
+        }
+        
+        .profile-card-body {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .profile-card-body h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 10px 0;
+        }
+        
+        .profile-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        
+        .profile-badge.admin {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+        
+        .profile-badge.faculty {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .profile-email {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 15px 0 20px;
+        }
+        
+        .profile-stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat .stat-value {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: #8b5cf6;
+        }
+        
+        .profile-stat .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .profile-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+        }
+        
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .form-group input:read-only {
+            background: #f9fafb;
+            cursor: default;
+        }
+        
+        .form-group input:not(:read-only) {
+            background: white;
+            border-color: #8b5cf6;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .form-actions.hidden {
+            display: none;
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .activity-icon.login {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .activity-icon.attendance {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .activity-icon.report {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .activity-icon.settings {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+        
+        .activity-icon .material-symbols-outlined {
+            font-size: 20px;
+        }
+        
+        .activity-details p {
+            margin: 0;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+        
+        @media (max-width: 1024px) {
+            .profile-page-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-card {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+
+    <script>
+        function toggleEditMode(section) {
+            const form = document.getElementById(section + 'Form');
+            const inputs = form.querySelectorAll('input');
+            const actions = document.getElementById(section + 'Actions');
+            
+            inputs.forEach(input => {
+                if (input.type !== 'hidden') {
+                    input.readOnly = !input.readOnly;
+                }
+            });
+            
+            actions.classList.toggle('hidden');
+        }
+        
+        function cancelEdit(section) {
+            const form = document.getElementById(section + 'Form');
+            form.reset();
+            toggleEditMode(section);
+        }
+    </script>
+</body>
+</html>

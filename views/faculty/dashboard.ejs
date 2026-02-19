@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-dashboard' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Welcome, <%= faculty.name %></h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/faculty/dashboard">Faculty Dashboard</a></p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-widgets">
+                <div class="widget widget-blue">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">school</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.totalClasses %></p>
+                        <h3>My Classes</h3>
+                    </div>
+                </div>
+                <div class="widget widget-green">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.totalStudents %></p>
+                        <h3>Total Students</h3>
+                    </div>
+                </div>
+                <div class="widget widget-orange">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">pending_actions</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.pendingAttendance %></p>
+                        <h3>Pending Today</h3>
+                    </div>
+                </div>
+                <div class="widget widget-purple">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= stats.markedToday %></p>
+                        <h3>Marked Today</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">calendar_today</span>
+                        <h3>Today's Schedule</h3>
+                    </div>
+                    <div class="schedule-list">
+                        <% schedule.forEach(function(item) { %>
+                        <div class="schedule-item">
+                            <div class="schedule-time">
+                                <span class="material-symbols-outlined">schedule</span>
+                                <%= item.time %>
+                            </div>
+                            <div class="schedule-details">
+                                <h4><%= item.subject %></h4>
+                                <p><%= item.class %> | Room: <%= item.room %></p>
+                            </div>
+                            <div class="schedule-status">
+                                <% if (item.attendanceMarked) { %>
+                                    <span class="status-badge completed">Marked</span>
+                                <% } else { %>
+                                    <a href="/faculty/attendance?class=<%= encodeURIComponent(item.class) %>&subject=<%= encodeURIComponent(item.subject) %>" class="btn-primary btn-sm">Mark Attendance</a>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% }); %>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <span class="material-symbols-outlined">bolt</span>
+                        <h3>Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions-grid">
+                        <a href="/faculty/attendance" class="quick-action-btn">
+                            <span class="material-symbols-outlined">fact_check</span>
+                            <span>Mark Attendance</span>
+                        </a>
+                        <a href="/faculty/attendance?view=history" class="quick-action-btn">
+                            <span class="material-symbols-outlined">history</span>
+                            <span>View History</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Attendance -->
+            <div class="section-header">
+                <h2>Recent Attendance Records</h2>
+            </div>
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Class</th>
+                            <th>Subject</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% recentRecords.forEach(function(record) { %>
+                        <tr>
+                            <td><%= record.date %></td>
+                            <td><%= record.class %></td>
+                            <td><%= record.subject %></td>
+                            <td><span class="text-green"><%= record.present %></span></td>
+                            <td><span class="text-red"><%= record.absent %></span></td>
+                            <td>
+                                <div class="attendance-badge <%= record.percentage >= 75 ? 'good' : 'low' %>">
+                                    <%= record.percentage %>%
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+        .schedule-time {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #8b5cf6;
+            min-width: 120px;
+        }
+        .schedule-details h4 {
+            margin: 0;
+            font-size: 15px;
+            color: #1a1a2e;
+        }
+        .schedule-details p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .schedule-status {
+            margin-left: auto;
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 25px 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #1a1a2e;
+            transition: all 0.2s ease;
+        }
+        .quick-action-btn:hover {
+            background: #ede9fe;
+            color: #8b5cf6;
+        }
+        .quick-action-btn .material-symbols-outlined {
+            font-size: 32px;
+            color: #8b5cf6;
+        }
+        .quick-action-btn span:last-child {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .text-green {
+            color: #16a34a;
+            font-weight: 600;
+        }
+        .text-red {
+            color: #dc2626;
+            font-weight: 600;
+        }
+    </style>
+</body>
+</html>

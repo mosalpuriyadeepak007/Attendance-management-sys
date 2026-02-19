@@ -1,0 +1,11 @@
+<!-- Faculty Sidebar Navigation -->
+<div class="sidebar">
+    <ul class="nav-links">
+        <li <% if (typeof active !== 'undefined' && active === 'faculty-dashboard') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty/dashboard" <% if (typeof active !== 'undefined' && active === 'faculty-dashboard') { %>class="active"<% } %>>Dashboard</a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty/attendance" <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>class="active"<% } %>>Mark Attendance</a>
+        </li>
+    </ul>
+</div>

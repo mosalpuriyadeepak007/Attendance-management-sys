@@ -3,111 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>AMS - Attendance Management System</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            background-color: #f8f9fc;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        .navbar {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
+            padding: 20px 80px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
-        .chart-container {
-            width: 700px;
-            height: 400px;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 20px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
         }
-        canvas {
-            width: 100%;
-            height: 100%;
+        .logo .material-symbols-outlined {
+            font-size: 32px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .nav-btn {
+            padding: 12px 28px;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 80px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content {
+            text-align: center;
+            color: white;
+            max-width: 800px;
+            z-index: 1;
+        }
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            font-size: 14px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 25px;
+        }
+        .hero p {
+            font-size: 20px;
+            opacity: 0.9;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .btn-primary {
+            padding: 16px 40px;
+            background: white;
+            color: #764ba2;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        .btn-secondary {
+            padding: 16px 40px;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+        
+        /* Floating shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape-1 { width: 300px; height: 300px; top: 10%; left: 5%; animation-delay: 0s; }
+        .shape-2 { width: 200px; height: 200px; bottom: 20%; right: 10%; animation-delay: 2s; }
+        .shape-3 { width: 150px; height: 150px; top: 40%; right: 5%; animation-delay: 4s; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 80px;
+            background: #f8fafc;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .section-header h2 {
+            font-size: 40px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+        .section-header p {
+            font-size: 18px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+        }
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .feature-icon .material-symbols-outlined {
+            font-size: 32px;
+            color: white;
+        }
+        .icon-blue { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .icon-green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .icon-orange { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .icon-purple { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+        .feature-card p {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .stat-item h3 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .stat-item p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 80px;
+            background: white;
+        }
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+        }
+        .about-text h2 {
+            font-size: 40px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 25px;
+        }
+        .about-text p {
+            font-size: 16px;
+            color: #6b7280;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .about-list {
+            list-style: none;
+        }
+        .about-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #374151;
+        }
+        .about-list .material-symbols-outlined {
+            color: #764ba2;
+            font-size: 24px;
+        }
+        .about-image {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 30px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .dashboard-preview {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .preview-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .preview-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ff5f57; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #28c840; }
+        .preview-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        .preview-stat {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .preview-stat h4 {
+            font-size: 24px;
+            color: #764ba2;
+            font-weight: 700;
+        }
+        .preview-stat p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 60px 80px 30px;
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .footer-brand p {
+            color: #9ca3af;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        .footer-links h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .footer-links ul {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: white;
+        }
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .navbar { padding: 20px 40px; }
+            .hero { padding: 120px 40px 80px; }
+            .hero h1 { font-size: 42px; }
+            .features, .about { padding: 80px 40px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-content { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .nav-links { display: none; }
+            .hero { padding: 100px 20px 60px; }
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 16px; }
+            .hero-buttons { flex-direction: column; }
+            .features, .about { padding: 60px 20px; }
+            .section-header h2 { font-size: 28px; }
+            .stats { padding: 60px 20px; }
+            .stat-item h3 { font-size: 36px; }
+            .footer { padding: 40px 20px 20px; }
+            .footer-content { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="chart-container">
-        <canvas id="smoothChart"></canvas>
-    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <span class="material-symbols-outlined">fact_check</span>
+            AMS
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="/login" class="nav-btn">Login</a>
+    </nav>
 
-    <script>
-        const ctx = document.getElementById("smoothChart").getContext("2d");
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        
+        <div class="hero-content">
+            <span class="hero-badge">Smart Attendance Solution</span>
+            <h1>Attendance Management System</h1>
+            <p>Smart, Secure, and Simple Attendance Tracking for Educational Institutions. Streamline your attendance process with our modern, intuitive platform.</p>
+            <div class="hero-buttons">
+                <a href="/login" class="btn-primary">
+                    <span class="material-symbols-outlined">login</span>
+                    Get Started
+                </a>
+                <a href="#features" class="btn-secondary">
+                    <span class="material-symbols-outlined">info</span>
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
 
-        const gradientBlue = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientBlue.addColorStop(0, "rgba(66, 133, 244, 0.5)");
-        gradientBlue.addColorStop(1, "rgba(66, 133, 244, 0.05)");
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Powerful Features</h2>
+            <p>Everything you need to manage attendance efficiently and effectively</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon icon-blue">
+                    <span class="material-symbols-outlined">fact_check</span>
+                </div>
+                <h3>Easy Attendance Marking</h3>
+                <p>Mark attendance quickly with our intuitive interface. Support for present, absent, and late status with optional remarks.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-green">
+                    <span class="material-symbols-outlined">analytics</span>
+                </div>
+                <h3>Real-time Analytics</h3>
+                <p>Track attendance patterns with beautiful charts and detailed reports. Get insights at a glance.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-orange">
+                    <span class="material-symbols-outlined">groups</span>
+                </div>
+                <h3>Student Management</h3>
+                <p>Manage student records, view individual attendance history, and identify defaulters easily.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon icon-purple">
+                    <span class="material-symbols-outlined">description</span>
+                </div>
+                <h3>Automated Reports</h3>
+                <p>Generate comprehensive reports in PDF, Excel, or CSV format. Schedule automatic report generation.</p>
+            </div>
+        </div>
+    </section>
 
-        const gradientGreen = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientGreen.addColorStop(0, "rgba(52, 168, 83, 0.5)");
-        gradientGreen.addColorStop(1, "rgba(52, 168, 83, 0.05)");
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <h3>1,200+</h3>
+                <p>Students Managed</p>
+            </div>
+            <div class="stat-item">
+                <h3>50+</h3>
+                <p>Faculty Members</p>
+            </div>
+            <div class="stat-item">
+                <h3>95%</h3>
+                <p>Attendance Rate</p>
+            </div>
+            <div class="stat-item">
+                <h3>4</h3>
+                <p>Departments</p>
+            </div>
+        </div>
+    </section>
 
-        const gradientOrange = ctx.createLinearGradient(0, 0, 0, 300);
-        gradientOrange.addColorStop(0, "rgba(251, 188, 5, 0.5)");
-        gradientOrange.addColorStop(1, "rgba(251, 188, 5, 0.05)");
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Why Choose AMS?</h2>
+                <p>Our Attendance Management System is designed to simplify the attendance tracking process for educational institutions. With role-based access, faculty can mark attendance while administrators have full control over the system.</p>
+                <ul class="about-list">
+                    <li>
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Role-based access for Admin and Faculty
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Real-time attendance tracking
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Automated notifications for low attendance
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Comprehensive reporting system
+                    </li>
+                    <li>
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Secure data backup and restore
+                    </li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <div class="dashboard-preview">
+                    <div class="preview-header">
+                        <span class="preview-dot dot-red"></span>
+                        <span class="preview-dot dot-yellow"></span>
+                        <span class="preview-dot dot-green"></span>
+                    </div>
+                    <div class="preview-stats">
+                        <div class="preview-stat">
+                            <h4>1,200</h4>
+                            <p>Total Students</p>
+                        </div>
+                        <div class="preview-stat">
+                            <h4>95%</h4>
+                            <p>Present Today</p>
+                        </div>
+                        <div class="preview-stat">
+                            <h4>5</h4>
+                            <p>Pending Reports</p>
+                        </div>
+                        <div class="preview-stat">
+                            <h4>3</h4>
+                            <p>Notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        new Chart(ctx, {
-            type: "line",
-            data: {
-                labels: ["00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00"],
-                datasets: [
-                    {
-                        label: "Present",
-                        data: [3, 4, 2, 5, 3, 6, 7],
-                        borderColor: "#4285F4",
-                        backgroundColor: gradientBlue,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: "#fff",
-                        pointBorderColor: "#4285F4",
-                        pointRadius: 5,
-                        pointHoverRadius: 6,
-                    },
-                    {
-                        label: "Absent",
-                        data: [1, 2, 3, 1, 2, 1, 3],
-                        borderColor: "#FBBC05",
-                        backgroundColor: gradientOrange,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: "#fff",
-                        pointBorderColor: "#FBBC05",
-                        pointRadius: 5,
-                        pointHoverRadius: 6,
-                    },
-                    {
-                        label: "Total",
-                        data: [5, 6, 5, 6, 5, 8, 9],
-                        borderColor: "#34A853",
-                        backgroundColor: gradientGreen,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: "#fff",
-                        pointBorderColor: "#34A853",
-                        pointRadius: 5,
-                        pointHoverRadius: 6,
-                    },
-                ],
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: "#666" }
-                    },
-                    y: {
-                        grid: { color: "rgba(0,0,0,0.05)" },
-                        ticks: { color: "#666", beginAtZero: true }
-                    }
-                }
-            }
-        });
-    </script>
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>
+                    <span class="material-symbols-outlined">fact_check</span>
+                    AMS
+                </h3>
+                <p>Smart, Secure, and Simple Attendance Tracking for Educational Institutions. Simplify your attendance management with our modern solution.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="/login">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:admin@ams.edu">admin@ams.edu</a></li>
+                    <li><a href="tel:+1234567890">+1 234 567 890</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Attendance Management System. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

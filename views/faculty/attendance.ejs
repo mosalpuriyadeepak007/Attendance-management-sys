@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-attendance' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Mark Attendance</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/faculty/attendance">Mark Attendance</a></p>
+                </div>
+            </div>
+
+            <!-- Class Selection -->
+            <div class="attendance-form-section">
+                <form id="attendanceFilterForm" class="filter-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="attendanceDate">Date</label>
+                            <input type="date" id="attendanceDate" name="date" value="<%= new Date().toISOString().split('T')[0] %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="classSelect">Class</label>
+                            <select id="classSelect" name="class" required>
+                                <option value="">Select Class</option>
+                                <% classes.forEach(function(cls) { %>
+                                <option value="<%= cls.id %>" <%= selectedClass === cls.id ? 'selected' : '' %>><%= cls.name %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subjectSelect">Subject</label>
+                            <select id="subjectSelect" name="subject" required>
+                                <option value="">Select Subject</option>
+                                <% subjects.forEach(function(subject) { %>
+                                <option value="<%= subject.id %>" <%= selectedSubject === subject.id ? 'selected' : '' %>><%= subject.name %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn-primary">Load Students</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-mark-actions">
+                <button type="button" class="btn-secondary" onclick="markAll('present')">
+                    <span class="material-symbols-outlined">check_circle</span> Mark All Present
+                </button>
+                <button type="button" class="btn-secondary" onclick="markAll('absent')">
+                    <span class="material-symbols-outlined">cancel</span> Mark All Absent
+                </button>
+            </div>
+
+            <!-- Student Attendance List -->
+            <form id="attendanceForm" action="/faculty/attendance/save" method="POST">
+                <input type="hidden" name="date" value="<%= new Date().toISOString().split('T')[0] %>">
+                <input type="hidden" name="class" value="<%= selectedClass %>">
+                <input type="hidden" name="subject" value="<%= selectedSubject %>">
+
+                <div class="table-container">
+                    <table class="data-table attendance-table">
+                        <thead>
+                            <tr>
+                                <th width="80">S.No</th>
+                                <th width="120">Roll No</th>
+                                <th>Student Name</th>
+                                <th width="100" class="text-center">Present</th>
+                                <th width="100" class="text-center">Absent</th>
+                                <th width="100" class="text-center">Late</th>
+                                <th width="150">Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% students.forEach(function(student, index) { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= student.rollNo %></td>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="avatar"><%= student.name.charAt(0) %></div>
+                                        <span><%= student.name %></span>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <input type="radio" name="attendance_<%= student.rollNo %>" value="present" checked class="attendance-radio">
+                                </td>
+                                <td class="text-center">
+                                    <input type="radio" name="attendance_<%= student.rollNo %>" value="absent" class="attendance-radio">
+                                </td>
+                                <td class="text-center">
+                                    <input type="radio" name="attendance_<%= student.rollNo %>" value="late" class="attendance-radio">
+                                </td>
+                                <td>
+                                    <input type="text" name="remarks_<%= student.rollNo %>" class="remarks-input" placeholder="Optional">
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary -->
+                <div class="attendance-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Students:</span>
+                        <span class="summary-value" id="totalCount"><%= students.length %></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Present:</span>
+                        <span class="summary-value text-green" id="presentCount"><%= students.length %></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Absent:</span>
+                        <span class="summary-value text-red" id="absentCount">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Late:</span>
+                        <span class="summary-value text-orange" id="lateCount">0</span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="window.history.back()">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <span class="material-symbols-outlined">save</span> Save Attendance
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .attendance-form-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .filter-form .form-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+        }
+        .filter-form .form-group {
+            flex: 1;
+        }
+        .quick-mark-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .attendance-table .text-center {
+            text-align: center;
+        }
+        .attendance-radio {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #8b5cf6;
+        }
+        .remarks-input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+        .remarks-input:focus {
+            border-color: #8b5cf6;
+        }
+        .attendance-summary {
+            display: flex;
+            gap: 30px;
+            padding: 20px 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin: 20px 0;
+        }
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .summary-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .summary-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .text-green {
+            color: #16a34a !important;
+        }
+        .text-red {
+            color: #dc2626 !important;
+        }
+        .text-orange {
+            color: #d97706 !important;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .form-actions .btn-primary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+
+    <script>
+        // Mark all students
+        function markAll(status) {
+            const radios = document.querySelectorAll(`input[value="${status}"]`);
+            radios.forEach(radio => radio.checked = true);
+            updateCounts();
+        }
+
+        // Update attendance counts
+        function updateCounts() {
+            const presentCount = document.querySelectorAll('input[value="present"]:checked').length;
+            const absentCount = document.querySelectorAll('input[value="absent"]:checked').length;
+            const lateCount = document.querySelectorAll('input[value="late"]:checked').length;
+            
+            document.getElementById('presentCount').textContent = presentCount;
+            document.getElementById('absentCount').textContent = absentCount;
+            document.getElementById('lateCount').textContent = lateCount;
+        }
+
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('.attendance-radio').forEach(radio => {
+            radio.addEventListener('change', updateCounts);
+        });
+
+        // Initial count
+        updateCounts();
+    </script>
+</body>
+</html>
