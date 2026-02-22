@@ -94,8 +94,21 @@ nav a:hover {
     font-size: 15px;
     font-weight: 500;
     width: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     transition: color 0.3s ease;
+}
+
+.sidebar ul a .material-symbols-outlined {
+    font-size: 22px;
+    color: #6b7280;
+    transition: color 0.3s ease;
+}
+
+.sidebar ul li:hover a .material-symbols-outlined,
+.sidebar ul a.active .material-symbols-outlined {
+    color: #8b5cf6;
 }
 
 .sidebar ul li:hover a {
@@ -124,6 +137,46 @@ nav a:hover {
 
 .menu-toggle .material-symbols-outlined {
     font-size: 28px;
+    color: #374151;
+}
+
+/* Sidebar Header (Mobile) */
+.sidebar-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 15px 5px 15px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-logo {
+    text-decoration: none;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+/* Sidebar Close Button */
+.sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-close:hover {
+    background-color: rgba(139, 92, 246, 0.1);
+}
+
+.sidebar-close .material-symbols-outlined {
+    font-size: 24px;
     color: #374151;
 }
 
@@ -194,11 +247,19 @@ nav a:hover {
         height: 100vh;
         z-index: 100;
         transition: left 0.3s ease;
-        padding-top: 70px;
+        padding-top: 15px;
     }
     
     .sidebar.active {
         left: 0;
+    }
+    
+    .sidebar-header {
+        display: flex;
+    }
+    
+    .sidebar-close {
+        display: block;
     }
     
     .sidebar-overlay.active {

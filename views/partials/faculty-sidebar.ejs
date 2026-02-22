@@ -1,11 +1,23 @@
 <!-- Faculty Sidebar Navigation -->
 <div class="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-logo">AMS</a>
+        <button class="sidebar-close" onclick="toggleSidebar()">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
     <ul class="nav-links">
         <li <% if (typeof active !== 'undefined' && active === 'faculty-dashboard') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/faculty/dashboard" <% if (typeof active !== 'undefined' && active === 'faculty-dashboard') { %>class="active"<% } %>>Dashboard</a>
+            <a href="/faculty/dashboard" <% if (typeof active !== 'undefined' && active === 'faculty-dashboard') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/faculty/attendance" <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>class="active"<% } %>>Mark Attendance</a>
+            <a href="/faculty/attendance" <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">edit_calendar</span>
+                <span>Mark Attendance</span>
+            </a>
         </li>
     </ul>
 </div>

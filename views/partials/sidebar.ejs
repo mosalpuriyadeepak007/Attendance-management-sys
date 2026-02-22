@@ -1,23 +1,47 @@
 <!-- Sidebar Navigation -->
 <div class="sidebar">
+    <div class="sidebar-header">
+        <a href="/" class="sidebar-logo">AMS</a>
+        <button class="sidebar-close" onclick="toggleSidebar()">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
     <ul class="nav-links">
         <li <% if (typeof active !== 'undefined' && active === 'dashboard') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/dashboard" <% if (typeof active !== 'undefined' && active === 'dashboard') { %>class="active"<% } %>>Dashboard</a>
+            <a href="/dashboard" <% if (typeof active !== 'undefined' && active === 'dashboard') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'faculty') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/faculty" <% if (typeof active !== 'undefined' && active === 'faculty') { %>class="active"<% } %>>Faculty</a>
+            <a href="/faculty" <% if (typeof active !== 'undefined' && active === 'faculty') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">groups</span>
+                <span>Faculty</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'students') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/students">Students</a>
+            <a href="/students">
+                <span class="material-symbols-outlined">school</span>
+                <span>Students</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'attendance') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/attendance">Attendance</a>
+            <a href="/attendance">
+                <span class="material-symbols-outlined">fact_check</span>
+                <span>Attendance</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'reports') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/reports">Reports</a>
+            <a href="/reports">
+                <span class="material-symbols-outlined">assessment</span>
+                <span>Reports</span>
+            </a>
         </li>
         <li <% if (typeof active !== 'undefined' && active === 'settings') { %>style="background-color: #CAAEF9;"<% } %>>
-            <a href="/settings">Settings</a>
+            <a href="/settings">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Settings</span>
+            </a>
         </li>
     </ul>
 </div>
