@@ -302,3 +302,35 @@ nav a:hover {
         width: 240px;
     }
 }
+
+/* Sidebar Footer */
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    border-top: 1px solid #e5e7eb;
+    background: white;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #dc2626;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #fee2e2;
+}
+
+.logout-btn .material-symbols-outlined {
+    font-size: 22px;
+}

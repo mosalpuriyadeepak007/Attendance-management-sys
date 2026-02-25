@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-profile' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>My Profile</h1>
+                    <p class="breadcrumb"><a href="/faculty/dashboard">Dashboard</a> / <a href="/faculty/profile">Profile</a></p>
+                </div>
+            </div>
+
+            <div class="profile-layout">
+                <!-- Profile Card -->
+                <div class="profile-card">
+                    <div class="profile-cover"></div>
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar">
+                            <%= faculty.name.charAt(0) %>
+                        </div>
+                        <button class="btn-edit-avatar" onclick="changePhoto()">
+                            <span class="material-symbols-outlined">photo_camera</span>
+                        </button>
+                    </div>
+                    <div class="profile-info-main">
+                        <h2><%= faculty.name %></h2>
+                        <p class="profile-designation"><%= faculty.designation %></p>
+                        <p class="profile-department"><%= faculty.department %></p>
+                        <span class="status-badge active">Active</span>
+                    </div>
+                    <div class="profile-stats-row">
+                        <div class="profile-stat">
+                            <span class="stat-value"><%= faculty.coursesCount %></span>
+                            <span class="stat-label">Courses</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="stat-value"><%= faculty.studentsCount %></span>
+                            <span class="stat-label">Students</span>
+                        </div>
+                        <div class="profile-stat">
+                            <span class="stat-value"><%= faculty.experience %></span>
+                            <span class="stat-label">Years Exp.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="profile-details-section">
+                    <!-- Personal Information -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <span class="material-symbols-outlined">person</span>
+                            <h3>Personal Information</h3>
+                            <button class="btn-edit" onclick="openModal('editPersonalModal')">
+                                <span class="material-symbols-outlined">edit</span> Edit
+                            </button>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Full Name</span>
+                                    <span class="info-value"><%= faculty.name %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Employee ID</span>
+                                    <span class="info-value"><%= faculty.id %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value"><%= faculty.email %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Phone</span>
+                                    <span class="info-value"><%= faculty.phone %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Date of Birth</span>
+                                    <span class="info-value"><%= faculty.dob %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Gender</span>
+                                    <span class="info-value"><%= faculty.gender %></span>
+                                </div>
+                                <div class="info-item full-width">
+                                    <span class="info-label">Address</span>
+                                    <span class="info-value"><%= faculty.address %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Professional Information -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <span class="material-symbols-outlined">work</span>
+                            <h3>Professional Information</h3>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Department</span>
+                                    <span class="info-value"><%= faculty.department %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Designation</span>
+                                    <span class="info-value"><%= faculty.designation %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Joining Date</span>
+                                    <span class="info-value"><%= faculty.joiningDate %></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Qualification</span>
+                                    <span class="info-value"><%= faculty.qualification %></span>
+                                </div>
+                                <div class="info-item full-width">
+                                    <span class="info-label">Subjects Teaching</span>
+                                    <div class="subjects-tags">
+                                        <% faculty.subjects.forEach(function(subject) { %>
+                                        <span class="subject-tag"><%= subject %></span>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <span class="material-symbols-outlined">security</span>
+                            <h3>Security Settings</h3>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <span class="material-symbols-outlined">lock</span>
+                                    <div>
+                                        <h4>Password</h4>
+                                        <p>Last changed <%= faculty.passwordChanged %></p>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="openModal('changePasswordModal')">Change Password</button>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <span class="material-symbols-outlined">smartphone</span>
+                                    <div>
+                                        <h4>Two-Factor Authentication</h4>
+                                        <p>Add extra security to your account</p>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary">Enable 2FA</button>
+                            </div>
+                            <div class="security-item">
+                                <div class="security-info">
+                                    <span class="material-symbols-outlined">history</span>
+                                    <div>
+                                        <h4>Login History</h4>
+                                        <p>View your recent login activity</p>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary" onclick="viewLoginHistory()">View History</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Personal Modal -->
+    <div id="editPersonalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Personal Information</h2>
+                <button class="close-btn" onclick="closeModal('editPersonalModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/faculty/profile/update" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editName">Full Name</label>
+                        <input type="text" id="editName" name="name" value="<%= faculty.name %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhone">Phone</label>
+                        <input type="tel" id="editPhone" name="phone" value="<%= faculty.phone %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDob">Date of Birth</label>
+                        <input type="date" id="editDob" name="dob" value="<%= faculty.dobRaw %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="editGender">Gender</label>
+                        <select id="editGender" name="gender">
+                            <option value="Male" <%= faculty.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                            <option value="Female" <%= faculty.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                            <option value="Other" <%= faculty.gender === 'Other' ? 'selected' : '' %>>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="editAddress">Address</label>
+                        <textarea id="editAddress" name="address" rows="2"><%= faculty.address %></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('editPersonalModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="close-btn" onclick="closeModal('changePasswordModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/faculty/profile/password" method="POST">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <div class="password-input">
+                        <input type="password" id="currentPassword" name="currentPassword" required>
+                        <span class="material-symbols-outlined toggle-password" onclick="togglePassword('currentPassword')">visibility</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="newPassword" name="newPassword" required>
+                        <span class="material-symbols-outlined toggle-password" onclick="togglePassword('newPassword')">visibility</span>
+                    </div>
+                    <small class="password-hint">Minimum 8 characters with uppercase, lowercase, and numbers</small>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <span class="material-symbols-outlined toggle-password" onclick="togglePassword('confirmPassword')">visibility</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('changePasswordModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            height: fit-content;
+        }
+
+        .profile-cover {
+            height: 100px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        }
+
+        .profile-avatar-section {
+            display: flex;
+            justify-content: center;
+            margin-top: -50px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-edit-avatar {
+            position: absolute;
+            bottom: 0;
+            right: calc(50% - 60px);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-edit-avatar .material-symbols-outlined {
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .profile-info-main {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .profile-info-main h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 5px 0;
+        }
+
+        .profile-designation {
+            font-size: 14px;
+            color: #8b5cf6;
+            font-weight: 500;
+            margin: 0 0 5px 0;
+        }
+
+        .profile-department {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 15px 0;
+        }
+
+        .profile-stats-row {
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .profile-stat {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        .profile-stat:last-child {
+            border-right: none;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .profile-details-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-card-header .btn-edit {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .info-card-header .btn-edit:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .info-card-header .btn-edit .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-item.full-width {
+            grid-column: span 2;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a2e;
+        }
+
+        .subjects-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .subject-tag {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            color: #8b5cf6;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .security-item:last-child {
+            border-bottom: none;
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .security-info .material-symbols-outlined {
+            font-size: 24px;
+            color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .security-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .security-info p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .password-input {
+            position: relative;
+        }
+
+        .password-input input {
+            width: 100%;
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .password-hint {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .modal-small {
+            max-width: 400px;
+        }
+
+        @media (max-width: 1024px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-item.full-width {
+                grid-column: span 1;
+            }
+
+            .security-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        function changePhoto() {
+            alert('Photo upload functionality');
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function viewLoginHistory() {
+            alert('Login history modal');
+        }
+    </script>
+</body>
+</html>

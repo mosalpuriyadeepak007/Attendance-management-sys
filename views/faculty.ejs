@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/Styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
 </head>
 <body>
     <%- include('partials/header') %>
@@ -14,11 +16,762 @@
         <%- include('partials/sidebar', { active: 'faculty' }) %>
 
         <div class="content">
-            <h1 style="color:#8d56ec;">Faculty</h1>
-            <p><a href="/">Home</a>&nbsp;/&nbsp;<a href="/faculty">Faculty</a></p>
-            
-            <!-- Add faculty content here -->
+            <div class="page-header">
+                <div>
+                    <h1>Faculty</h1>
+                    <p class="breadcrumb"><a href="/">Home</a> / <a href="/faculty">Faculty</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary"><span class="material-symbols-outlined">download</span> Export</button>
+                    <button class="btn-primary" onclick="openModal('addFacultyModal')"><span class="material-symbols-outlined">person_add</span> Add Faculty</button>
+                </div>
+            </div>
+
+            <!-- Stats Widgets -->
+            <div class="dashboard-widgets">
+                <div class="widget widget-blue">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Total Faculty</h3>
+                        <p class="widget-value"><%= faculty.length %></p>
+                        <span class="widget-trend up"><span class="material-symbols-outlined">trending_up</span> Active Staff</span>
+                    </div>
+                </div>
+                <div class="widget widget-green">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">domain</span>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Departments</h3>
+                        <p class="widget-value"><%= [...new Set(faculty.map(f => f.department))].length %></p>
+                        <span class="widget-trend">Covered</span>
+                    </div>
+                </div>
+                <div class="widget widget-purple">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">verified</span>
+                    </div>
+                    <div class="widget-info">
+                        <h3>Active</h3>
+                        <p class="widget-value"><%= faculty.filter(f => f.status === 'active').length %></p>
+                        <span class="widget-trend up"><span class="material-symbols-outlined">check_circle</span> Online</span>
+                    </div>
+                </div>
+                <div class="widget widget-orange">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <div class="widget-info">
+                        <h3>On Leave</h3>
+                        <p class="widget-value"><%= faculty.filter(f => f.status === 'on-leave').length %></p>
+                        <span class="widget-trend">This Month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="filter-section">
+                <div class="search-box">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" placeholder="Search faculty..." id="searchInput" onkeyup="filterTable()">
+                </div>
+                <div class="filter-group">
+                    <select id="departmentFilter" onchange="filterTable()">
+                        <option value="">All Departments</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Mechanical">Mechanical</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Physics">Physics</option>
+                    </select>
+                    <select id="statusFilter" onchange="filterTable()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="on-leave">On Leave</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Faculty Table -->
+            <div class="table-container">
+                <table class="data-table" id="facultyTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                            <th>Faculty ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>Subjects</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% faculty.forEach(function(member) { %>
+                        <tr data-department="<%= member.department %>" data-status="<%= member.status %>">
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td><%= member.id %></td>
+                            <td>
+                                <div class="faculty-info">
+                                    <div class="avatar" style="background: linear-gradient(135deg, <%= member.status === 'active' ? '#8b5cf6' : member.status === 'on-leave' ? '#f59e0b' : '#9ca3af' %> 0%, <%= member.status === 'active' ? '#6366f1' : member.status === 'on-leave' ? '#d97706' : '#6b7280' %> 100%);">
+                                        <%= member.name.charAt(0) %>
+                                    </div>
+                                    <div class="faculty-details">
+                                        <span class="faculty-name"><%= member.name %></span>
+                                        <span class="faculty-phone"><%= member.phone %></span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><%= member.email %></td>
+                            <td><span class="dept-badge"><%= member.department %></span></td>
+                            <td><%= member.designation %></td>
+                            <td>
+                                <div class="subjects-list">
+                                    <% member.subjects.slice(0, 2).forEach(function(subject) { %>
+                                        <span class="subject-tag"><%= subject %></span>
+                                    <% }); %>
+                                    <% if (member.subjects.length > 2) { %>
+                                        <span class="subject-tag more">+<%= member.subjects.length - 2 %></span>
+                                    <% } %>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge <%= member.status %>"><%= member.status.replace('-', ' ') %></span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon" title="View" onclick="viewFaculty('<%= member.id %>')"><span class="material-symbols-outlined">visibility</span></button>
+                                    <button class="btn-icon" title="Edit" onclick="editFaculty('<%= member.id %>')"><span class="material-symbols-outlined">edit</span></button>
+                                    <button class="btn-icon delete" title="Delete" onclick="deleteFaculty('<%= member.id %>')"><span class="material-symbols-outlined">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <span class="page-info">Showing 1-<%= Math.min(10, faculty.length) %> of <%= faculty.length %> faculty members</span>
+                <div class="page-buttons">
+                    <button class="page-btn" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+                    <button class="page-btn active">1</button>
+                    <% if (faculty.length > 10) { %>
+                    <button class="page-btn">2</button>
+                    <% } %>
+                    <% if (faculty.length > 20) { %>
+                    <button class="page-btn">3</button>
+                    <% } %>
+                    <button class="page-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Add Faculty Modal -->
+    <div id="addFacultyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Faculty</h2>
+                <button class="close-btn" onclick="closeModal('addFacultyModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/faculty/add" method="POST">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="facultyId">Faculty ID</label>
+                        <input type="text" id="facultyId" name="facultyId" placeholder="e.g., FAC006" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyName">Full Name</label>
+                        <input type="text" id="facultyName" name="facultyName" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyEmail">Email</label>
+                        <input type="email" id="facultyEmail" name="facultyEmail" placeholder="email@college.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyPhone">Phone</label>
+                        <input type="tel" id="facultyPhone" name="facultyPhone" placeholder="+1 234 567 8900">
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyDept">Department</label>
+                        <select id="facultyDept" name="facultyDept" required>
+                            <option value="">Select Department</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyDesignation">Designation</label>
+                        <select id="facultyDesignation" name="facultyDesignation" required>
+                            <option value="">Select Designation</option>
+                            <option value="Professor">Professor</option>
+                            <option value="Associate Professor">Associate Professor</option>
+                            <option value="Assistant Professor">Assistant Professor</option>
+                            <option value="Lecturer">Lecturer</option>
+                            <option value="Lab Instructor">Lab Instructor</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="facultySubjects">Subjects (comma separated)</label>
+                        <input type="text" id="facultySubjects" name="facultySubjects" placeholder="e.g., Data Structures, Algorithms, Database Systems">
+                    </div>
+                    <div class="form-group">
+                        <label for="joiningDate">Joining Date</label>
+                        <input type="date" id="joiningDate" name="joiningDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facultyStatus">Status</label>
+                        <select id="facultyStatus" name="facultyStatus" required>
+                            <option value="active">Active</option>
+                            <option value="on-leave">On Leave</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('addFacultyModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Faculty</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- View Faculty Modal -->
+    <div id="viewFacultyModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Faculty Details</h2>
+                <button class="close-btn" onclick="closeModal('viewFacultyModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="faculty-profile">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="viewAvatar">J</div>
+                    <div class="profile-info">
+                        <h3 id="viewName">John Smith</h3>
+                        <p id="viewDesignation">Professor</p>
+                        <span class="status-badge active" id="viewStatus">Active</span>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <div class="detail-group">
+                        <span class="detail-label"><span class="material-symbols-outlined">badge</span> Faculty ID</span>
+                        <span class="detail-value" id="viewId">FAC001</span>
+                    </div>
+                    <div class="detail-group">
+                        <span class="detail-label"><span class="material-symbols-outlined">mail</span> Email</span>
+                        <span class="detail-value" id="viewEmail">john.smith@college.edu</span>
+                    </div>
+                    <div class="detail-group">
+                        <span class="detail-label"><span class="material-symbols-outlined">phone</span> Phone</span>
+                        <span class="detail-value" id="viewPhone">+1 234 567 8901</span>
+                    </div>
+                    <div class="detail-group">
+                        <span class="detail-label"><span class="material-symbols-outlined">domain</span> Department</span>
+                        <span class="detail-value" id="viewDepartment">Computer Science</span>
+                    </div>
+                    <div class="detail-group">
+                        <span class="detail-label"><span class="material-symbols-outlined">calendar_month</span> Joining Date</span>
+                        <span class="detail-value" id="viewJoiningDate">Jan 15, 2020</span>
+                    </div>
+                    <div class="detail-group full-width">
+                        <span class="detail-label"><span class="material-symbols-outlined">menu_book</span> Subjects</span>
+                        <div class="subjects-list" id="viewSubjects">
+                            <span class="subject-tag">Programming</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('viewFacultyModal')">Close</button>
+                <button type="button" class="btn-primary" onclick="closeModal('viewFacultyModal'); editFaculty(document.getElementById('viewId').textContent)">Edit Faculty</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Faculty Modal -->
+    <div id="editFacultyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Faculty</h2>
+                <button class="close-btn" onclick="closeModal('editFacultyModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form action="/faculty/edit" method="POST">
+                <input type="hidden" id="editFacultyIdHidden" name="originalId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editFacultyId">Faculty ID</label>
+                        <input type="text" id="editFacultyId" name="facultyId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyName">Full Name</label>
+                        <input type="text" id="editFacultyName" name="facultyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyEmail">Email</label>
+                        <input type="email" id="editFacultyEmail" name="facultyEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyPhone">Phone</label>
+                        <input type="tel" id="editFacultyPhone" name="facultyPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyDept">Department</label>
+                        <select id="editFacultyDept" name="facultyDept" required>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Physics">Physics</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyDesignation">Designation</label>
+                        <select id="editFacultyDesignation" name="facultyDesignation" required>
+                            <option value="Professor">Professor</option>
+                            <option value="Associate Professor">Associate Professor</option>
+                            <option value="Assistant Professor">Assistant Professor</option>
+                            <option value="Lecturer">Lecturer</option>
+                            <option value="Lab Instructor">Lab Instructor</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="editFacultySubjects">Subjects (comma separated)</label>
+                        <input type="text" id="editFacultySubjects" name="facultySubjects">
+                    </div>
+                    <div class="form-group">
+                        <label for="editJoiningDate">Joining Date</label>
+                        <input type="date" id="editJoiningDate" name="joiningDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFacultyStatus">Status</label>
+                        <select id="editFacultyStatus" name="facultyStatus" required>
+                            <option value="active">Active</option>
+                            <option value="on-leave">On Leave</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('editFacultyModal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <button class="close-btn" onclick="closeModal('deleteModal')"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="delete-content">
+                <div class="delete-icon">
+                    <span class="material-symbols-outlined">warning</span>
+                </div>
+                <p>Are you sure you want to delete <strong id="deleteFacultyName"></strong>?</p>
+                <p class="delete-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                <button type="button" class="btn-danger" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Faculty Page Specific Styles */
+        .faculty-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .faculty-info .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .faculty-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faculty-name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .faculty-phone {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .dept-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            color: #8b5cf6;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .subjects-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #f3f4f6;
+            color: #6b7280;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .subject-tag.more {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .status-badge.on-leave {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-icon .material-symbols-outlined {
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .btn-icon.delete:hover {
+            background: #fee2e2;
+        }
+
+        .btn-icon.delete:hover .material-symbols-outlined {
+            color: #dc2626;
+        }
+
+        /* Faculty Profile in View Modal */
+        .faculty-profile {
+            padding: 20px 0;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .profile-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 22px;
+            color: #1a1a2e;
+        }
+
+        .profile-info p {
+            margin: 0 0 10px 0;
+            color: #6b7280;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .detail-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-group.full-width {
+            grid-column: span 2;
+        }
+
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #9ca3af;
+        }
+
+        .detail-label .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .detail-value {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1a1a2e;
+            padding-left: 26px;
+        }
+
+        /* Delete Modal */
+        .modal-small {
+            max-width: 400px;
+        }
+
+        .delete-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .delete-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-icon .material-symbols-outlined {
+            font-size: 32px;
+            color: #dc2626;
+        }
+
+        .delete-content p {
+            margin: 0 0 10px 0;
+            color: #374151;
+        }
+
+        .delete-warning {
+            font-size: 13px;
+            color: #9ca3af !important;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Form Styles */
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* Modal Large */
+        .modal-large {
+            max-width: 600px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-group.full-width {
+                grid-column: span 1;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+
+    <script>
+        // Faculty data from server (for client-side operations)
+        const facultyData = <%- JSON.stringify(faculty) %>;
+        let deleteId = null;
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        }
+
+        function filterTable() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const departmentValue = document.getElementById('departmentFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const rows = document.querySelectorAll('#facultyTable tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const dept = row.getAttribute('data-department');
+                const status = row.getAttribute('data-status');
+                
+                const matchesSearch = text.includes(searchValue);
+                const matchesDept = !departmentValue || dept === departmentValue;
+                const matchesStatus = !statusValue || status === statusValue;
+
+                row.style.display = matchesSearch && matchesDept && matchesStatus ? '' : 'none';
+            });
+        }
+
+        function viewFaculty(id) {
+            const faculty = facultyData.find(f => f.id === id);
+            if (faculty) {
+                document.getElementById('viewId').textContent = faculty.id;
+                document.getElementById('viewName').textContent = faculty.name;
+                document.getElementById('viewAvatar').textContent = faculty.name.charAt(0);
+                document.getElementById('viewEmail').textContent = faculty.email;
+                document.getElementById('viewPhone').textContent = faculty.phone;
+                document.getElementById('viewDepartment').textContent = faculty.department;
+                document.getElementById('viewDesignation').textContent = faculty.designation;
+                document.getElementById('viewJoiningDate').textContent = new Date(faculty.joiningDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                
+                const statusBadge = document.getElementById('viewStatus');
+                statusBadge.textContent = faculty.status.replace('-', ' ');
+                statusBadge.className = 'status-badge ' + faculty.status;
+
+                const subjectsContainer = document.getElementById('viewSubjects');
+                subjectsContainer.innerHTML = faculty.subjects.map(s => `<span class="subject-tag">${s}</span>`).join('');
+
+                openModal('viewFacultyModal');
+            }
+        }
+
+        function editFaculty(id) {
+            const faculty = facultyData.find(f => f.id === id);
+            if (faculty) {
+                document.getElementById('editFacultyIdHidden').value = faculty.id;
+                document.getElementById('editFacultyId').value = faculty.id;
+                document.getElementById('editFacultyName').value = faculty.name;
+                document.getElementById('editFacultyEmail').value = faculty.email;
+                document.getElementById('editFacultyPhone').value = faculty.phone;
+                document.getElementById('editFacultyDept').value = faculty.department;
+                document.getElementById('editFacultyDesignation').value = faculty.designation;
+                document.getElementById('editFacultySubjects').value = faculty.subjects.join(', ');
+                document.getElementById('editJoiningDate').value = faculty.joiningDate;
+                document.getElementById('editFacultyStatus').value = faculty.status;
+
+                openModal('editFacultyModal');
+            }
+        }
+
+        function deleteFaculty(id) {
+            const faculty = facultyData.find(f => f.id === id);
+            if (faculty) {
+                deleteId = id;
+                document.getElementById('deleteFacultyName').textContent = faculty.name;
+                openModal('deleteModal');
+            }
+        }
+
+        function confirmDelete() {
+            if (deleteId) {
+                // In a real app, this would make an API call
+                window.location.href = `/faculty/delete/${deleteId}`;
+            }
+        }
+    </script>
 </body>
 </html>

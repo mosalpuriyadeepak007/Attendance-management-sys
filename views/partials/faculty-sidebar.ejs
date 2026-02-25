@@ -13,11 +13,35 @@
                 <span>Dashboard</span>
             </a>
         </li>
+        <li <% if (typeof active !== 'undefined' && active === 'faculty-courses') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty/courses" <% if (typeof active !== 'undefined' && active === 'faculty-courses') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">menu_book</span>
+                <span>My Courses</span>
+            </a>
+        </li>
         <li <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>style="background-color: #CAAEF9;"<% } %>>
             <a href="/faculty/attendance" <% if (typeof active !== 'undefined' && active === 'faculty-attendance') { %>class="active"<% } %>>
                 <span class="material-symbols-outlined">edit_calendar</span>
                 <span>Mark Attendance</span>
             </a>
         </li>
+        <li <% if (typeof active !== 'undefined' && active === 'faculty-reports') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty/reports" <% if (typeof active !== 'undefined' && active === 'faculty-reports') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">assessment</span>
+                <span>Reports</span>
+            </a>
+        </li>
+        <li <% if (typeof active !== 'undefined' && active === 'faculty-settings') { %>style="background-color: #CAAEF9;"<% } %>>
+            <a href="/faculty/settings" <% if (typeof active !== 'undefined' && active === 'faculty-settings') { %>class="active"<% } %>>
+                <span class="material-symbols-outlined">settings</span>
+                <span>Settings</span>
+            </a>
+        </li>
     </ul>
+    <div class="sidebar-footer">
+        <a href="/login" class="logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+            <span>Logout</span>
+        </a>
+    </div>
 </div>

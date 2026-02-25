@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-reports' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Attendance Reports</h1>
+                    <p class="breadcrumb"><a href="/faculty/dashboard">Dashboard</a> / <a href="/faculty/reports">Reports</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="exportReport('pdf')">
+                        <span class="material-symbols-outlined">picture_as_pdf</span> Export PDF
+                    </button>
+                    <button class="btn-secondary" onclick="exportReport('excel')">
+                        <span class="material-symbols-outlined">table_view</span> Export Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="dashboard-widgets">
+                <div class="widget widget-blue">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.totalClasses %></p>
+                        <h3>Classes Taken</h3>
+                    </div>
+                </div>
+                <div class="widget widget-green">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">trending_up</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.avgAttendance %>%</p>
+                        <h3>Avg. Attendance</h3>
+                    </div>
+                </div>
+                <div class="widget widget-orange">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">warning</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.lowAttendanceStudents %></p>
+                        <h3>Low Attendance</h3>
+                    </div>
+                </div>
+                <div class="widget widget-purple">
+                    <div class="widget-icon">
+                        <span class="material-symbols-outlined">emoji_events</span>
+                    </div>
+                    <div class="widget-info">
+                        <p class="widget-value"><%= summary.perfectAttendance %></p>
+                        <h3>100% Attendance</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <select id="courseFilter" onchange="filterReports()">
+                        <option value="">All Courses</option>
+                        <% courses.forEach(function(course) { %>
+                        <option value="<%= course.id %>"><%= course.name %></option>
+                        <% }); %>
+                    </select>
+                    <select id="classFilter" onchange="filterReports()">
+                        <option value="">All Classes</option>
+                        <option value="CSE - 1st Year">CSE - 1st Year</option>
+                        <option value="CSE - 2nd Year">CSE - 2nd Year</option>
+                        <option value="CSE - 3rd Year">CSE - 3rd Year</option>
+                    </select>
+                    <input type="date" id="startDate" onchange="filterReports()">
+                    <input type="date" id="endDate" onchange="filterReports()">
+                </div>
+                <div class="view-toggle">
+                    <button class="toggle-btn active" onclick="switchView('date')" id="dateViewBtn">
+                        <span class="material-symbols-outlined">calendar_today</span> Date-wise
+                    </button>
+                    <button class="toggle-btn" onclick="switchView('student')" id="studentViewBtn">
+                        <span class="material-symbols-outlined">person</span> Student-wise
+                    </button>
+                </div>
+            </div>
+
+            <!-- Date-wise Report View -->
+            <div class="report-view" id="dateView">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Course</th>
+                                <th>Class</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Late</th>
+                                <th>Attendance %</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% dateReports.forEach(function(report) { %>
+                            <tr>
+                                <td><%= new Date(report.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %></td>
+                                <td><%= report.course %></td>
+                                <td><%= report.class %></td>
+                                <td><span class="count-badge present"><%= report.present %></span></td>
+                                <td><span class="count-badge absent"><%= report.absent %></span></td>
+                                <td><span class="count-badge late"><%= report.late %></span></td>
+                                <td>
+                                    <div class="attendance-progress">
+                                        <div class="progress-bar <%= report.percentage >= 75 ? 'green' : report.percentage >= 60 ? 'orange' : 'red' %>">
+                                            <div class="progress" style="width: <%= report.percentage %>%;"></div>
+                                        </div>
+                                        <span><%= report.percentage %>%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn-icon" title="View Details" onclick="viewDetails('<%= report.id %>')">
+                                        <span class="material-symbols-outlined">visibility</span>
+                                    </button>
+                                    <button class="btn-icon" title="Edit" onclick="editAttendance('<%= report.id %>')">
+                                        <span class="material-symbols-outlined">edit</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Student-wise Report View -->
+            <div class="report-view" id="studentView" style="display: none;">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Student Name</th>
+                                <th>Classes Attended</th>
+                                <th>Classes Missed</th>
+                                <th>Attendance %</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% studentReports.forEach(function(student) { %>
+                            <tr>
+                                <td><%= student.rollNo %></td>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="avatar"><%= student.name.charAt(0) %></div>
+                                        <span><%= student.name %></span>
+                                    </div>
+                                </td>
+                                <td><%= student.attended %></td>
+                                <td><%= student.missed %></td>
+                                <td>
+                                    <div class="attendance-progress">
+                                        <div class="progress-bar <%= student.percentage >= 75 ? 'green' : student.percentage >= 60 ? 'orange' : 'red' %>">
+                                            <div class="progress" style="width: <%= student.percentage %>%;"></div>
+                                        </div>
+                                        <span><%= student.percentage %>%</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge <%= student.percentage >= 75 ? 'active' : student.percentage >= 60 ? 'warning' : 'danger' %>">
+                                        <%= student.percentage >= 75 ? 'Good' : student.percentage >= 60 ? 'Warning' : 'Defaulter' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn-icon" title="View History" onclick="viewStudentHistory('<%= student.rollNo %>')">
+                                        <span class="material-symbols-outlined">history</span>
+                                    </button>
+                                    <button class="btn-icon" title="Send Alert" onclick="sendAlert('<%= student.rollNo %>')">
+                                        <span class="material-symbols-outlined">notifications</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <span class="page-info">Showing 1-10 of <%= dateReports.length %> records</span>
+                <div class="page-buttons">
+                    <button class="page-btn" disabled><span class="material-symbols-outlined">chevron_left</span></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn"><span class="material-symbols-outlined">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .view-toggle {
+            display: flex;
+            gap: 5px;
+            background: #f3f4f6;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            color: #374151;
+        }
+
+        .toggle-btn.active {
+            background: white;
+            color: #8b5cf6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .toggle-btn .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        .count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .count-badge.present {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .count-badge.absent {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .count-badge.late {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .attendance-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .attendance-progress .progress-bar {
+            flex: 1;
+            max-width: 100px;
+        }
+
+        .attendance-progress span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            min-width: 45px;
+        }
+
+        .status-badge.warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-badge.danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-info .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .btn-icon:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-icon .material-symbols-outlined {
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+            }
+
+            .view-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .attendance-progress .progress-bar {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        function switchView(view) {
+            document.getElementById('dateView').style.display = view === 'date' ? 'block' : 'none';
+            document.getElementById('studentView').style.display = view === 'student' ? 'block' : 'none';
+            
+            document.getElementById('dateViewBtn').classList.toggle('active', view === 'date');
+            document.getElementById('studentViewBtn').classList.toggle('active', view === 'student');
+        }
+
+        function filterReports() {
+            // Implement filter logic
+            console.log('Filtering reports...');
+        }
+
+        function exportReport(type) {
+            alert(`Exporting report as ${type.toUpperCase()}...`);
+        }
+
+        function viewDetails(id) {
+            alert(`Viewing details for report: ${id}`);
+        }
+
+        function editAttendance(id) {
+            window.location.href = `/faculty/attendance/edit/${id}`;
+        }
+
+        function viewStudentHistory(rollNo) {
+            alert(`Viewing history for student: ${rollNo}`);
+        }
+
+        function sendAlert(rollNo) {
+            alert(`Sending alert to student: ${rollNo}`);
+        }
+    </script>
+</body>
+</html>

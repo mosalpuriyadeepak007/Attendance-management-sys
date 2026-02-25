@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-settings' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Settings</h1>
+                    <p class="breadcrumb"><a href="/faculty/dashboard">Dashboard</a> / <a href="/faculty/settings">Settings</a></p>
+                </div>
+            </div>
+
+            <div class="settings-layout">
+                <!-- Settings Navigation -->
+                <div class="settings-nav">
+                    <button class="settings-nav-item active" onclick="showSection('general')">
+                        <span class="material-symbols-outlined">tune</span>
+                        <span>General</span>
+                    </button>
+                    <button class="settings-nav-item" onclick="showSection('notifications')">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span>Notifications</span>
+                    </button>
+                    <button class="settings-nav-item" onclick="showSection('attendance')">
+                        <span class="material-symbols-outlined">fact_check</span>
+                        <span>Attendance</span>
+                    </button>
+                    <button class="settings-nav-item" onclick="showSection('display')">
+                        <span class="material-symbols-outlined">palette</span>
+                        <span>Display</span>
+                    </button>
+                    <button class="settings-nav-item" onclick="showSection('academic')">
+                        <span class="material-symbols-outlined">school</span>
+                        <span>Academic</span>
+                    </button>
+                </div>
+
+                <!-- Settings Content -->
+                <div class="settings-content">
+                    <!-- General Settings -->
+                    <div class="settings-section active" id="general">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">tune</span>
+                                <h3>General Preferences</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Language</h4>
+                                        <p>Select your preferred language</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="en" selected>English</option>
+                                        <option value="hi">Hindi</option>
+                                        <option value="es">Spanish</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Time Zone</h4>
+                                        <p>Set your local time zone</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="ist" selected>IST (India Standard Time)</option>
+                                        <option value="pst">PST (Pacific Standard Time)</option>
+                                        <option value="est">EST (Eastern Standard Time)</option>
+                                        <option value="utc">UTC</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Date Format</h4>
+                                        <p>Choose how dates are displayed</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="dd-mm-yyyy" selected>DD-MM-YYYY</option>
+                                        <option value="mm-dd-yyyy">MM-DD-YYYY</option>
+                                        <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Default Dashboard View</h4>
+                                        <p>Set your preferred landing page after login</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="dashboard" selected>Dashboard</option>
+                                        <option value="courses">My Courses</option>
+                                        <option value="attendance">Mark Attendance</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Settings -->
+                    <div class="settings-section" id="notifications">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">notifications</span>
+                                <h3>Notification Preferences</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Email Notifications</h4>
+                                        <p>Receive notifications via email</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Low Attendance Alerts</h4>
+                                        <p>Get notified when students fall below threshold</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Daily Summary</h4>
+                                        <p>Receive daily attendance summary</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>System Announcements</h4>
+                                        <p>Get notified about system updates</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Push Notifications</h4>
+                                        <p>Enable browser push notifications</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Settings -->
+                    <div class="settings-section" id="attendance">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">fact_check</span>
+                                <h3>Attendance Settings</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Default Attendance Status</h4>
+                                        <p>Default status when marking attendance</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="present" selected>Present</option>
+                                        <option value="absent">Absent</option>
+                                        <option value="none">None (Manual selection)</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Late Threshold (minutes)</h4>
+                                        <p>Minutes after class starts to mark as late</p>
+                                    </div>
+                                    <input type="number" class="setting-input" value="<%= settings.lateThreshold %>" min="5" max="30">
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Auto-Save Attendance</h4>
+                                        <p>Automatically save attendance every few minutes</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Confirm Before Saving</h4>
+                                        <p>Show confirmation dialog before saving</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Allow Edit After Submission</h4>
+                                        <p>Allow editing attendance after it's submitted</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Settings -->
+                    <div class="settings-section" id="display">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">palette</span>
+                                <h3>Display Settings</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Theme</h4>
+                                        <p>Select your preferred theme</p>
+                                    </div>
+                                    <div class="theme-options">
+                                        <label class="theme-option selected">
+                                            <input type="radio" name="theme" value="light" checked>
+                                            <span class="theme-preview light"><span class="material-symbols-outlined">light_mode</span></span>
+                                            <span>Light</span>
+                                        </label>
+                                        <label class="theme-option">
+                                            <input type="radio" name="theme" value="dark">
+                                            <span class="theme-preview dark"><span class="material-symbols-outlined">dark_mode</span></span>
+                                            <span>Dark</span>
+                                        </label>
+                                        <label class="theme-option">
+                                            <input type="radio" name="theme" value="auto">
+                                            <span class="theme-preview auto"><span class="material-symbols-outlined">brightness_auto</span></span>
+                                            <span>Auto</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Compact Mode</h4>
+                                        <p>Use smaller spacing and fonts</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Show Student Photos</h4>
+                                        <p>Display student photos in attendance list</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Rows Per Page</h4>
+                                        <p>Number of rows to show in tables</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Academic Settings -->
+                    <div class="settings-section" id="academic">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">school</span>
+                                <h3>Academic Settings</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Current Academic Year</h4>
+                                        <p>Active academic year for attendance</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="2025-2026" selected><%= settings.academicYear %></option>
+                                        <option value="2024-2025">2024-2025</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Current Semester</h4>
+                                        <p>Active semester</p>
+                                    </div>
+                                    <select class="setting-select">
+                                        <option value="odd">Odd Semester</option>
+                                        <option value="even" selected>Even Semester</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Minimum Attendance Required</h4>
+                                        <p>Minimum percentage for eligibility</p>
+                                    </div>
+                                    <div class="input-with-suffix">
+                                        <input type="number" class="setting-input" value="<%= settings.minAttendance %>" min="50" max="100">
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Warning Threshold</h4>
+                                        <p>Attendance percentage to trigger warning</p>
+                                    </div>
+                                    <div class="input-with-suffix">
+                                        <input type="number" class="setting-input" value="<%= settings.warningThreshold %>" min="50" max="100">
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="settings-actions">
+                        <button class="btn-secondary" onclick="resetSettings()">Reset to Defaults</button>
+                        <button class="btn-primary" onclick="saveSettings()">
+                            <span class="material-symbols-outlined">save</span> Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 25px;
+        }
+
+        .settings-nav {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .settings-nav-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .settings-nav-item:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .settings-nav-item.active {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            color: #8b5cf6;
+        }
+
+        .settings-nav-item .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        .settings-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 5px 0;
+        }
+
+        .setting-info p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .setting-select {
+            padding: 10px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #374151;
+            background: white;
+            min-width: 180px;
+            cursor: pointer;
+        }
+
+        .setting-select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .setting-input {
+            padding: 10px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #374151;
+            width: 80px;
+            text-align: center;
+        }
+
+        .setting-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .input-with-suffix {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-with-suffix span {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: 0.4s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Theme Options */
+        .theme-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .theme-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .theme-option input {
+            display: none;
+        }
+
+        .theme-preview {
+            width: 60px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .theme-preview.light {
+            background: #f9fafb;
+            color: #f59e0b;
+        }
+
+        .theme-preview.dark {
+            background: #1a1a2e;
+            color: #6366f1;
+        }
+
+        .theme-preview.auto {
+            background: linear-gradient(135deg, #f9fafb 50%, #1a1a2e 50%);
+            color: #8b5cf6;
+        }
+
+        .theme-option.selected .theme-preview,
+        .theme-option input:checked + .theme-preview {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .theme-option span:last-child {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        @media (max-width: 1024px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-nav {
+                position: static;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .settings-nav-item {
+                width: auto;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .theme-options {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+
+    <script>
+        function showSection(sectionId) {
+            // Update nav
+            document.querySelectorAll('.settings-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.settings-nav-item').classList.add('active');
+
+            // Update sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Theme selection
+        document.querySelectorAll('.theme-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        function saveSettings() {
+            alert('Settings saved successfully!');
+        }
+
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to defaults?')) {
+                alert('Settings reset to defaults.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Styles.css">
+    <link rel="stylesheet" href="/css/Dashboard.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+
+    <div class="mainContainer">
+        <%- include('../partials/faculty-sidebar', { active: 'faculty-notifications' }) %>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Notifications</h1>
+                    <p class="breadcrumb"><a href="/faculty/dashboard">Dashboard</a> / <a href="/faculty/notifications">Notifications</a></p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" onclick="markAllRead()">
+                        <span class="material-symbols-outlined">done_all</span> Mark All Read
+                    </button>
+                </div>
+            </div>
+
+            <!-- Notification Tabs -->
+            <div class="notification-tabs">
+                <button class="tab-btn active" onclick="filterNotifications('all')" data-tab="all">
+                    All <span class="tab-count"><%= notifications.length %></span>
+                </button>
+                <button class="tab-btn" onclick="filterNotifications('unread')" data-tab="unread">
+                    Unread <span class="tab-count"><%= notifications.filter(n => !n.read).length %></span>
+                </button>
+                <button class="tab-btn" onclick="filterNotifications('attendance')" data-tab="attendance">
+                    Attendance
+                </button>
+                <button class="tab-btn" onclick="filterNotifications('system')" data-tab="system">
+                    System
+                </button>
+                <button class="tab-btn" onclick="filterNotifications('announcement')" data-tab="announcement">
+                    Announcements
+                </button>
+            </div>
+
+            <!-- Notifications List -->
+            <div class="notifications-container">
+                <% notifications.forEach(function(notification) { %>
+                <div class="notification-item <%= notification.read ? '' : 'unread' %>" data-type="<%= notification.type %>" data-id="<%= notification.id %>">
+                    <div class="notification-icon <%= notification.type %>">
+                        <span class="material-symbols-outlined"><%= notification.icon %></span>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-header">
+                            <h4><%= notification.title %></h4>
+                            <span class="notification-time"><%= notification.time %></span>
+                        </div>
+                        <p><%= notification.message %></p>
+                        <% if (notification.action) { %>
+                        <a href="<%= notification.actionUrl %>" class="notification-action">
+                            <%= notification.action %> <span class="material-symbols-outlined">arrow_forward</span>
+                        </a>
+                        <% } %>
+                    </div>
+                    <div class="notification-actions">
+                        <% if (!notification.read) { %>
+                        <button class="btn-icon" title="Mark as Read" onclick="markAsRead('<%= notification.id %>')">
+                            <span class="material-symbols-outlined">check</span>
+                        </button>
+                        <% } %>
+                        <button class="btn-icon" title="Delete" onclick="deleteNotification('<%= notification.id %>')">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+                <% }); %>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <span class="material-symbols-outlined">notifications_off</span>
+                    <h3>No notifications</h3>
+                    <p>You're all caught up!</p>
+                </div>
+            </div>
+
+            <!-- Announcements Section -->
+            <div class="announcements-section">
+                <div class="section-header">
+                    <h2><span class="material-symbols-outlined">campaign</span> College Announcements</h2>
+                </div>
+                <div class="announcements-list">
+                    <% announcements.forEach(function(announcement) { %>
+                    <div class="announcement-card">
+                        <div class="announcement-badge <%= announcement.priority %>"><%= announcement.priority %></div>
+                        <h3><%= announcement.title %></h3>
+                        <p><%= announcement.content %></p>
+                        <div class="announcement-meta">
+                            <span><span class="material-symbols-outlined">person</span> <%= announcement.author %></span>
+                            <span><span class="material-symbols-outlined">schedule</span> <%= announcement.date %></span>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .notification-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        .tab-count {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .tab-btn.active .tab-count {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .notifications-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .notification-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .notification-item.unread {
+            background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-icon .material-symbols-outlined {
+            font-size: 24px;
+            color: white;
+        }
+
+        .notification-icon.attendance {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .notification-icon.system {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .notification-icon.announcement {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .notification-icon.alert {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .notification-icon.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .notification-header h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+
+        .notification-content p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        .notification-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #8b5cf6;
+            text-decoration: none;
+        }
+
+        .notification-action:hover {
+            text-decoration: underline;
+        }
+
+        .notification-action .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-icon .material-symbols-outlined {
+            font-size: 20px;
+            color: #6b7280;
+        }
+
+        .announcements-section {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        .section-header .material-symbols-outlined {
+            font-size: 24px;
+            color: #8b5cf6;
+        }
+
+        .announcements-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .announcement-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .announcement-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .announcement-badge.high {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .announcement-badge.medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .announcement-badge.low {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .announcement-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 10px 0;
+            padding-right: 60px;
+        }
+
+        .announcement-card p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 15px 0;
+            line-height: 1.5;
+        }
+
+        .announcement-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .announcement-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .announcement-meta .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state .material-symbols-outlined {
+            font-size: 64px;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #374151;
+            margin: 15px 0 8px;
+        }
+
+        .empty-state p {
+            color: #6b7280;
+        }
+
+        @media (max-width: 768px) {
+            .notification-tabs {
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+
+            .notification-item {
+                flex-direction: column;
+            }
+
+            .notification-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .notification-actions {
+                align-self: flex-end;
+            }
+
+            .announcements-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        function filterNotifications(type) {
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-tab="${type}"]`).classList.add('active');
+
+            const items = document.querySelectorAll('.notification-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                const isUnread = item.classList.contains('unread');
+
+                let show = false;
+                if (type === 'all') show = true;
+                else if (type === 'unread') show = isUnread;
+                else show = itemType === type;
+
+                item.style.display = show ? 'flex' : 'none';
+                if (show) visibleCount++;
+            });
+
+            document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function markAsRead(id) {
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.classList.remove('unread');
+                item.querySelector('.btn-icon[title="Mark as Read"]')?.remove();
+            }
+        }
+
+        function markAllRead() {
+            document.querySelectorAll('.notification-item.unread').forEach(item => {
+                item.classList.remove('unread');
+                item.querySelector('.btn-icon[title="Mark as Read"]')?.remove();
+            });
+        }
+
+        function deleteNotification(id) {
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(20px)';
+                setTimeout(() => item.remove(), 300);
+            }
+        }
+    </script>
+</body>
+</html>
