@@ -26,9 +26,13 @@
             <div class="settings-layout">
                 <!-- Settings Navigation -->
                 <div class="settings-nav">
-                    <button class="settings-nav-item active" onclick="showSection('general')">
-                        <span class="material-symbols-outlined">tune</span>
-                        <span>General</span>
+                    <button class="settings-nav-item active" onclick="showSection('account')">
+                        <span class="material-symbols-outlined">person</span>
+                        <span>Account</span>
+                    </button>
+                    <button class="settings-nav-item" onclick="showSection('security')">
+                        <span class="material-symbols-outlined">lock</span>
+                        <span>Security</span>
                     </button>
                     <button class="settings-nav-item" onclick="showSection('notifications')">
                         <span class="material-symbols-outlined">notifications</span>
@@ -42,66 +46,153 @@
                         <span class="material-symbols-outlined">palette</span>
                         <span>Display</span>
                     </button>
-                    <button class="settings-nav-item" onclick="showSection('academic')">
-                        <span class="material-symbols-outlined">school</span>
-                        <span>Academic</span>
+                    <button class="settings-nav-item" onclick="showSection('about')">
+                        <span class="material-symbols-outlined">info</span>
+                        <span>About</span>
                     </button>
                 </div>
 
                 <!-- Settings Content -->
                 <div class="settings-content">
-                    <!-- General Settings -->
-                    <div class="settings-section active" id="general">
+                    <!-- Account Settings -->
+                    <div class="settings-section active" id="account">
                         <div class="info-card">
                             <div class="info-card-header">
-                                <span class="material-symbols-outlined">tune</span>
-                                <h3>General Preferences</h3>
+                                <span class="material-symbols-outlined">person</span>
+                                <h3>Account Information</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="account-profile">
+                                    <div class="profile-avatar-large">
+                                        <%= faculty.name.split(' ').map(n => n[0]).join('') %>
+                                    </div>
+                                    <div class="profile-info-main">
+                                        <h2><%= faculty.name %></h2>
+                                        <p><%= faculty.designation %> • <%= faculty.department %></p>
+                                        <span class="badge-active">Active</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Faculty ID</h4>
+                                        <p>Your unique identifier</p>
+                                    </div>
+                                    <span class="setting-value"><%= faculty.id %></span>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Email Address</h4>
+                                        <p>Primary email for communication</p>
+                                    </div>
+                                    <span class="setting-value"><%= faculty.email %></span>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Phone Number</h4>
+                                        <p>Contact number</p>
+                                    </div>
+                                    <div class="editable-field">
+                                        <input type="tel" id="phone" value="<%= faculty.phone %>" class="setting-input-wide">
+                                        <button class="btn-edit" onclick="updateField('phone')">
+                                            <span class="material-symbols-outlined">edit</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Department</h4>
+                                        <p>Assigned department</p>
+                                    </div>
+                                    <span class="setting-value"><%= faculty.department %></span>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Joining Date</h4>
+                                        <p>Date of joining institution</p>
+                                    </div>
+                                    <span class="setting-value"><%= faculty.joiningDate %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="settings-section" id="security">
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">lock</span>
+                                <h3>Security Settings</h3>
                             </div>
                             <div class="info-card-body">
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Language</h4>
-                                        <p>Select your preferred language</p>
+                                        <h4>Change Password</h4>
+                                        <p>Update your account password</p>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="en" selected>English</option>
-                                        <option value="hi">Hindi</option>
-                                        <option value="es">Spanish</option>
-                                    </select>
+                                    <button class="btn-secondary" onclick="openPasswordModal()">
+                                        <span class="material-symbols-outlined">key</span> Change Password
+                                    </button>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Time Zone</h4>
-                                        <p>Set your local time zone</p>
+                                        <h4>Two-Factor Authentication</h4>
+                                        <p>Add extra security to your account</p>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="ist" selected>IST (India Standard Time)</option>
-                                        <option value="pst">PST (Pacific Standard Time)</option>
-                                        <option value="est">EST (Eastern Standard Time)</option>
-                                        <option value="utc">UTC</option>
-                                    </select>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="twoFactor" onchange="toggle2FA()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Date Format</h4>
-                                        <p>Choose how dates are displayed</p>
+                                        <h4>Login Alerts</h4>
+                                        <p>Get notified of new login attempts</p>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="dd-mm-yyyy" selected>DD-MM-YYYY</option>
-                                        <option value="mm-dd-yyyy">MM-DD-YYYY</option>
-                                        <option value="yyyy-mm-dd">YYYY-MM-DD</option>
-                                    </select>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Default Dashboard View</h4>
-                                        <p>Set your preferred landing page after login</p>
+                                        <h4>Session Timeout</h4>
+                                        <p>Auto logout after inactivity</p>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="dashboard" selected>Dashboard</option>
-                                        <option value="courses">My Courses</option>
-                                        <option value="attendance">Mark Attendance</option>
+                                    <select class="setting-select" id="sessionTimeout">
+                                        <option value="15">15 minutes</option>
+                                        <option value="30" selected>30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="120">2 hours</option>
+                                        <option value="0">Never</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">history</span>
+                                <h3>Recent Login Activity</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="login-activity-list">
+                                    <% loginActivity.forEach(activity => { %>
+                                    <div class="login-activity-item">
+                                        <div class="activity-icon <%= activity.current ? 'current' : '' %>">
+                                            <span class="material-symbols-outlined"><%= activity.device === 'Desktop' ? 'computer' : 'phone_android' %></span>
+                                        </div>
+                                        <div class="activity-details">
+                                            <h4><%= activity.browser %> on <%= activity.device %> <% if (activity.current) { %><span class="badge-current">Current</span><% } %></h4>
+                                            <p><%= activity.location %> • <%= activity.time %></p>
+                                        </div>
+                                        <% if (!activity.current) { %>
+                                        <button class="btn-icon-small" title="Revoke session">
+                                            <span class="material-symbols-outlined">close</span>
+                                        </button>
+                                        <% } %>
+                                    </div>
+                                    <% }); %>
                                 </div>
                             </div>
                         </div>
@@ -121,37 +212,7 @@
                                         <p>Receive notifications via email</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Low Attendance Alerts</h4>
-                                        <p>Get notified when students fall below threshold</p>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Daily Summary</h4>
-                                        <p>Receive daily attendance summary</p>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>System Announcements</h4>
-                                        <p>Get notified about system updates</p>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" checked id="emailNotif">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -161,7 +222,66 @@
                                         <p>Enable browser push notifications</p>
                                     </div>
                                     <label class="toggle-switch">
+                                        <input type="checkbox" id="pushNotif">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">tune</span>
+                                <h3>Notification Types</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Low Attendance Alerts</h4>
+                                        <p>When students fall below <%= settings.warningThreshold %>%</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Daily Summary Report</h4>
+                                        <p>Daily attendance summary at end of day</p>
+                                    </div>
+                                    <label class="toggle-switch">
                                         <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Weekly Summary Report</h4>
+                                        <p>Weekly attendance summary on weekends</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>System Announcements</h4>
+                                        <p>Updates and maintenance notifications</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Schedule Reminders</h4>
+                                        <p>Reminders before scheduled classes</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -174,7 +294,7 @@
                         <div class="info-card">
                             <div class="info-card-header">
                                 <span class="material-symbols-outlined">fact_check</span>
-                                <h3>Attendance Settings</h3>
+                                <h3>Attendance Preferences</h3>
                             </div>
                             <div class="info-card-body">
                                 <div class="setting-item">
@@ -182,26 +302,19 @@
                                         <h4>Default Attendance Status</h4>
                                         <p>Default status when marking attendance</p>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="present" selected>Present</option>
-                                        <option value="absent">Absent</option>
-                                        <option value="none">None (Manual selection)</option>
+                                    <select class="setting-select" id="defaultStatus">
+                                        <option value="present">Present (All marked present)</option>
+                                        <option value="absent">Absent (All marked absent)</option>
+                                        <option value="none" selected>None (Manual selection)</option>
                                     </select>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Late Threshold (minutes)</h4>
-                                        <p>Minutes after class starts to mark as late</p>
-                                    </div>
-                                    <input type="number" class="setting-input" value="<%= settings.lateThreshold %>" min="5" max="30">
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
                                         <h4>Auto-Save Attendance</h4>
-                                        <p>Automatically save attendance every few minutes</p>
+                                        <p>Automatically save attendance periodically</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" id="autoSave">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -211,19 +324,58 @@
                                         <p>Show confirmation dialog before saving</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" checked id="confirmSave">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Allow Edit After Submission</h4>
-                                        <p>Allow editing attendance after it's submitted</p>
+                                        <h4>Quick Mark Mode</h4>
+                                        <p>Single tap to toggle attendance status</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox">
+                                        <input type="checkbox" checked id="quickMark">
                                         <span class="toggle-slider"></span>
                                     </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">info</span>
+                                <h3>Institution Rules (Read Only)</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="rules-grid">
+                                    <div class="rule-item">
+                                        <span class="material-symbols-outlined">school</span>
+                                        <div>
+                                            <h4>Academic Year</h4>
+                                            <p><%= settings.academicYear %></p>
+                                        </div>
+                                    </div>
+                                    <div class="rule-item">
+                                        <span class="material-symbols-outlined">percent</span>
+                                        <div>
+                                            <h4>Minimum Attendance</h4>
+                                            <p><%= settings.minAttendance %>%</p>
+                                        </div>
+                                    </div>
+                                    <div class="rule-item">
+                                        <span class="material-symbols-outlined">warning</span>
+                                        <div>
+                                            <h4>Warning Threshold</h4>
+                                            <p><%= settings.warningThreshold %>%</p>
+                                        </div>
+                                    </div>
+                                    <div class="rule-item">
+                                        <span class="material-symbols-outlined">schedule</span>
+                                        <div>
+                                            <h4>Late Threshold</h4>
+                                            <p><%= settings.lateThreshold %> minutes</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -234,7 +386,7 @@
                         <div class="info-card">
                             <div class="info-card-header">
                                 <span class="material-symbols-outlined">palette</span>
-                                <h3>Display Settings</h3>
+                                <h3>Appearance</h3>
                             </div>
                             <div class="info-card-body">
                                 <div class="setting-item">
@@ -266,83 +418,150 @@
                                         <p>Use smaller spacing and fonts</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox">
+                                        <input type="checkbox" id="compactMode">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
-                                        <h4>Show Student Photos</h4>
-                                        <p>Display student photos in attendance list</p>
+                                        <h4>Sidebar Collapsed</h4>
+                                        <p>Start with collapsed sidebar</p>
                                     </div>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" id="sidebarCollapsed">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">table_chart</span>
+                                <h3>Table & List Settings</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Show Student Photos</h4>
+                                        <p>Display photos in attendance list</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked id="showPhotos">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="setting-item">
                                     <div class="setting-info">
                                         <h4>Rows Per Page</h4>
-                                        <p>Number of rows to show in tables</p>
+                                        <p>Number of rows in tables</p>
                                     </div>
-                                    <select class="setting-select">
+                                    <select class="setting-select" id="rowsPerPage">
                                         <option value="10">10</option>
                                         <option value="25" selected>25</option>
                                         <option value="50">50</option>
                                         <option value="100">100</option>
                                     </select>
                                 </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Date Format</h4>
+                                        <p>How dates are displayed</p>
+                                    </div>
+                                    <select class="setting-select" id="dateFormat">
+                                        <option value="dd-mm-yyyy" selected>DD-MM-YYYY</option>
+                                        <option value="mm-dd-yyyy">MM-DD-YYYY</option>
+                                        <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <h4>Time Format</h4>
+                                        <p>12-hour or 24-hour format</p>
+                                    </div>
+                                    <select class="setting-select" id="timeFormat">
+                                        <option value="12" selected>12 Hour (AM/PM)</option>
+                                        <option value="24">24 Hour</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Academic Settings -->
-                    <div class="settings-section" id="academic">
+                    <!-- About Section -->
+                    <div class="settings-section" id="about">
                         <div class="info-card">
                             <div class="info-card-header">
-                                <span class="material-symbols-outlined">school</span>
-                                <h3>Academic Settings</h3>
+                                <span class="material-symbols-outlined">info</span>
+                                <h3>About System</h3>
                             </div>
                             <div class="info-card-body">
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Current Academic Year</h4>
-                                        <p>Active academic year for attendance</p>
+                                <div class="about-logo">
+                                    <div class="logo-icon">
+                                        <span class="material-symbols-outlined">school</span>
                                     </div>
-                                    <select class="setting-select">
-                                        <option value="2025-2026" selected><%= settings.academicYear %></option>
-                                        <option value="2024-2025">2024-2025</option>
-                                    </select>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Current Semester</h4>
-                                        <p>Active semester</p>
-                                    </div>
-                                    <select class="setting-select">
-                                        <option value="odd">Odd Semester</option>
-                                        <option value="even" selected>Even Semester</option>
-                                    </select>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Minimum Attendance Required</h4>
-                                        <p>Minimum percentage for eligibility</p>
-                                    </div>
-                                    <div class="input-with-suffix">
-                                        <input type="number" class="setting-input" value="<%= settings.minAttendance %>" min="50" max="100">
-                                        <span>%</span>
+                                    <div class="logo-text">
+                                        <h2><%= settings.institutionName %></h2>
+                                        <p>Attendance Management System</p>
                                     </div>
                                 </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <h4>Warning Threshold</h4>
-                                        <p>Attendance percentage to trigger warning</p>
+
+                                <div class="about-info-grid">
+                                    <div class="about-info-item">
+                                        <span class="material-symbols-outlined">badge</span>
+                                        <div>
+                                            <h4>Version</h4>
+                                            <p>2.0.0</p>
+                                        </div>
                                     </div>
-                                    <div class="input-with-suffix">
-                                        <input type="number" class="setting-input" value="<%= settings.warningThreshold %>" min="50" max="100">
-                                        <span>%</span>
+                                    <div class="about-info-item">
+                                        <span class="material-symbols-outlined">calendar_month</span>
+                                        <div>
+                                            <h4>Last Updated</h4>
+                                            <p>February 25, 2026</p>
+                                        </div>
                                     </div>
+                                    <div class="about-info-item">
+                                        <span class="material-symbols-outlined">domain</span>
+                                        <div>
+                                            <h4>Institution</h4>
+                                            <p><%= settings.institutionName %></p>
+                                        </div>
+                                    </div>
+                                    <div class="about-info-item">
+                                        <span class="material-symbols-outlined">mail</span>
+                                        <div>
+                                            <h4>Support Email</h4>
+                                            <p><%= settings.supportEmail %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-card-header">
+                                <span class="material-symbols-outlined">help</span>
+                                <h3>Help & Support</h3>
+                            </div>
+                            <div class="info-card-body">
+                                <div class="help-links">
+                                    <a href="#" class="help-link">
+                                        <span class="material-symbols-outlined">description</span>
+                                        <span>User Guide</span>
+                                    </a>
+                                    <a href="#" class="help-link">
+                                        <span class="material-symbols-outlined">video_library</span>
+                                        <span>Video Tutorials</span>
+                                    </a>
+                                    <a href="#" class="help-link">
+                                        <span class="material-symbols-outlined">quiz</span>
+                                        <span>FAQs</span>
+                                    </a>
+                                    <a href="#" class="help-link">
+                                        <span class="material-symbols-outlined">support_agent</span>
+                                        <span>Contact Support</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +569,9 @@
 
                     <!-- Save Button -->
                     <div class="settings-actions">
-                        <button class="btn-secondary" onclick="resetSettings()">Reset to Defaults</button>
+                        <button class="btn-secondary" onclick="resetSettings()">
+                            <span class="material-symbols-outlined">restart_alt</span> Reset to Defaults
+                        </button>
                         <button class="btn-primary" onclick="saveSettings()">
                             <span class="material-symbols-outlined">save</span> Save Changes
                         </button>
@@ -358,6 +579,63 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2><span class="material-symbols-outlined">key</span> Change Password</h2>
+                <button class="close-btn" onclick="closePasswordModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="currentPassword" placeholder="Enter current password">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('currentPassword')">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="newPassword" placeholder="Enter new password" oninput="checkPasswordStrength()">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('newPassword')">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">Password strength</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirmPassword" placeholder="Confirm new password">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closePasswordModal()">Cancel</button>
+                <button class="btn-primary" onclick="changePassword()">
+                    <span class="material-symbols-outlined">check</span> Update Password
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="material-symbols-outlined toast-icon">check_circle</span>
+        <span class="toast-message">Settings saved successfully!</span>
     </div>
 
     <style>
@@ -419,14 +697,63 @@
         }
 
         .settings-section.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
         }
 
+        /* Account Profile */
+        .account-profile {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 10px;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .profile-info-main h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 5px 0;
+        }
+
+        .profile-info-main p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 0 10px 0;
+        }
+
+        .badge-active {
+            display: inline-flex;
+            padding: 4px 12px;
+            background: #d1fae5;
+            color: #059669;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+
+        /* Setting Items */
         .setting-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 0;
+            padding: 18px 0;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -438,13 +765,19 @@
             font-size: 15px;
             font-weight: 600;
             color: #1a1a2e;
-            margin: 0 0 5px 0;
+            margin: 0 0 4px 0;
         }
 
         .setting-info p {
             font-size: 13px;
             color: #6b7280;
             margin: 0;
+        }
+
+        .setting-value {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
         }
 
         .setting-select {
@@ -463,29 +796,45 @@
             border-color: #8b5cf6;
         }
 
-        .setting-input {
+        .setting-input-wide {
             padding: 10px 15px;
             border: 1px solid #e5e7eb;
             border-radius: 10px;
             font-size: 14px;
             color: #374151;
-            width: 80px;
-            text-align: center;
+            width: 200px;
         }
 
-        .setting-input:focus {
+        .setting-input-wide:focus {
             outline: none;
             border-color: #8b5cf6;
         }
 
-        .input-with-suffix {
+        .editable-field {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .input-with-suffix span {
-            font-size: 14px;
+        .btn-edit {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-edit .material-symbols-outlined {
+            font-size: 18px;
             color: #6b7280;
         }
 
@@ -590,6 +939,226 @@
             color: #6b7280;
         }
 
+        /* Rules Grid */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .rule-item .material-symbols-outlined {
+            font-size: 28px;
+            color: #8b5cf6;
+        }
+
+        .rule-item h4 {
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            margin: 0 0 4px 0;
+        }
+
+        .rule-item p {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        /* Login Activity */
+        .login-activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-icon.current {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+        }
+
+        .activity-icon .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0 0 4px 0;
+        }
+
+        .activity-details p {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .badge-current {
+            display: inline-flex;
+            padding: 2px 8px;
+            background: #d1fae5;
+            color: #059669;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+
+        .btn-icon-small {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .btn-icon-small:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* About Section */
+        .about-logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon .material-symbols-outlined {
+            font-size: 36px;
+            color: white;
+        }
+
+        .logo-text h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0 0 5px 0;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .about-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .about-info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .about-info-item .material-symbols-outlined {
+            font-size: 24px;
+            color: #8b5cf6;
+        }
+
+        .about-info-item h4 {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin: 0 0 3px 0;
+        }
+
+        .about-info-item p {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin: 0;
+        }
+
+        /* Help Links */
+        .help-links {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .help-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .help-link:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+            color: #8b5cf6;
+        }
+
+        .help-link .material-symbols-outlined {
+            font-size: 22px;
+            color: #8b5cf6;
+        }
+
+        /* Settings Actions */
         .settings-actions {
             display: flex;
             justify-content: flex-end;
@@ -598,6 +1167,109 @@
             border-top: 1px solid #e5e7eb;
         }
 
+        /* Password Modal */
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-input-wrapper input {
+            width: 100%;
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+
+        .toggle-password:hover {
+            color: #6b7280;
+        }
+
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: 0;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .password-strength.weak .strength-bar::after {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .password-strength.medium .strength-bar::after {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .password-strength.strong .strength-bar::after {
+            width: 100%;
+            background: #10b981;
+        }
+
+        .strength-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .password-strength.weak .strength-text { color: #ef4444; }
+        .password-strength.medium .strength-text { color: #f59e0b; }
+        .password-strength.strong .strength-text { color: #10b981; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: #1a1a2e;
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            color: #10b981;
+        }
+
+        .toast.error .toast-icon {
+            color: #ef4444;
+        }
+
+        /* Responsive */
         @media (max-width: 1024px) {
             .settings-layout {
                 grid-template-columns: 1fr;
@@ -613,8 +1285,14 @@
             .settings-nav-item {
                 width: auto;
                 flex: 1;
-                min-width: 120px;
+                min-width: 100px;
                 justify-content: center;
+            }
+
+            .rules-grid,
+            .about-info-grid,
+            .help-links {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -628,6 +1306,11 @@
             .theme-options {
                 width: 100%;
                 justify-content: space-between;
+            }
+
+            .account-profile {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -655,14 +1338,151 @@
             });
         });
 
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('passwordStrength').className = 'password-strength';
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            const button = input.nextElementSibling;
+            const icon = button.querySelector('.material-symbols-outlined');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthEl = document.getElementById('passwordStrength');
+            const textEl = strengthEl.querySelector('.strength-text');
+
+            strengthEl.className = 'password-strength';
+
+            if (password.length === 0) {
+                textEl.textContent = 'Password strength';
+                return;
+            }
+
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            if (strength <= 2) {
+                strengthEl.classList.add('weak');
+                textEl.textContent = 'Weak password';
+            } else if (strength <= 4) {
+                strengthEl.classList.add('medium');
+                textEl.textContent = 'Medium strength';
+            } else {
+                strengthEl.classList.add('strong');
+                textEl.textContent = 'Strong password';
+            }
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showToast('Please fill in all fields', true);
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('New passwords do not match', true);
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('Password must be at least 6 characters', true);
+                return;
+            }
+
+            // API call would go here
+            showToast('Password changed successfully!');
+            closePasswordModal();
+        }
+
+        function toggle2FA() {
+            const enabled = document.getElementById('twoFactor').checked;
+            if (enabled) {
+                showToast('Two-factor authentication enabled');
+            } else {
+                showToast('Two-factor authentication disabled');
+            }
+        }
+
+        function updateField(fieldId) {
+            const input = document.getElementById(fieldId);
+            showToast(fieldId.charAt(0).toUpperCase() + fieldId.slice(1) + ' updated successfully!');
+        }
+
         function saveSettings() {
-            alert('Settings saved successfully!');
+            // Collect all settings
+            const settings = {
+                sessionTimeout: document.getElementById('sessionTimeout').value,
+                defaultStatus: document.getElementById('defaultStatus').value,
+                rowsPerPage: document.getElementById('rowsPerPage').value,
+                dateFormat: document.getElementById('dateFormat').value,
+                timeFormat: document.getElementById('timeFormat').value
+            };
+
+            // API call would go here
+            console.log('Saving settings:', settings);
+            showToast('Settings saved successfully!');
         }
 
         function resetSettings() {
             if (confirm('Are you sure you want to reset all settings to defaults?')) {
-                alert('Settings reset to defaults.');
+                // Reset all form elements
+                document.getElementById('sessionTimeout').value = '30';
+                document.getElementById('defaultStatus').value = 'none';
+                document.getElementById('rowsPerPage').value = '25';
+                document.getElementById('dateFormat').value = 'dd-mm-yyyy';
+                document.getElementById('timeFormat').value = '12';
+                
+                // Reset toggles
+                document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                    if (toggle.id !== 'twoFactor') {
+                        toggle.checked = true;
+                    }
+                });
+
+                showToast('Settings reset to defaults');
             }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const msgEl = toast.querySelector('.toast-message');
+            const iconEl = toast.querySelector('.toast-icon');
+
+            msgEl.textContent = message;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            iconEl.textContent = isError ? 'error' : 'check_circle';
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
     </script>
 </body>

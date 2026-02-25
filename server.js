@@ -15,6 +15,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// ======================
+// API ROUTES
+// ======================
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
+const facultyApiRoutes = require('./routes/faculty');
+
+// Mount API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/faculty', facultyApiRoutes);
+
 // Routes
 app.get('/', (req, res) => {
     res.render('index', { title: 'Smooth Area Line Chart' });
@@ -548,11 +560,45 @@ app.get('/faculty/notifications', (req, res) => {
 app.get('/faculty/settings', (req, res) => {
     res.render('faculty/settings', {
         title: 'Settings',
+        faculty: {
+            id: 'FAC001',
+            name: 'Dr. John Smith',
+            email: 'john.smith@university.edu',
+            phone: '+1 (555) 123-4567',
+            department: 'Computer Science',
+            designation: 'Associate Professor',
+            joiningDate: 'January 15, 2020'
+        },
+        loginActivity: [
+            {
+                device: 'Desktop',
+                browser: 'Chrome',
+                location: 'New York, USA',
+                time: 'Today, 10:30 AM',
+                current: true
+            },
+            {
+                device: 'Mobile',
+                browser: 'Safari',
+                location: 'New York, USA',
+                time: 'Yesterday, 6:45 PM',
+                current: false
+            },
+            {
+                device: 'Desktop',
+                browser: 'Firefox',
+                location: 'Boston, USA',
+                time: '2 days ago',
+                current: false
+            }
+        ],
         settings: {
             academicYear: '2025-2026',
             minAttendance: 75,
             warningThreshold: 80,
-            lateThreshold: 15
+            lateThreshold: 15,
+            institutionName: 'University of Technology',
+            supportEmail: 'support@university.edu'
         }
     });
 });
